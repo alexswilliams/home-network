@@ -1,7 +1,7 @@
 - name: Sudo is installed
-  pacman:
+  package:
     state: present
-    name: ["sudo"]
+    name: sudo
 
 - name: Sudoers is set up
   copy:

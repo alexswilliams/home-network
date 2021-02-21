@@ -1,3 +1,8 @@
+- name: SSH is installed
+  package:
+    state: present
+    name: ssh
+
 - name: SSH genkeys service is disabled
   systemd:
     name: sshdgenkeys

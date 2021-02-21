@@ -1,0 +1,178 @@
+- name: Non-specific ICMP echos are ignored
+  sysctl:
+    state: present
+    name: "{{ item }}"
+    value: "1"
+    sysctl_set: yes
+  with_items:
+    - net.ipv4.icmp_echo_ignore_broadcasts
+    - net.ipv6.icmp.echo_ignore_anycast
+    - net.ipv6.icmp.echo_ignore_multicast
+
+- name: ICMP redirects are not accepted
+  sysctl:
+    state: present
+    name: "{{ item }}"
+    value: "0"
+    sysctl_set: yes
+  with_items:
+    - net.ipv4.conf.all.accept_redirects
+    - net.ipv4.conf.default.accept_redirects
+    - net.ipv6.conf.all.accept_redirects
+    - net.ipv6.conf.default.accept_redirects
+
+- name: ICMP redirects are not sent
+  sysctl:
+    state: present
+    name: "{{ item }}"
+    value: "0"
+    sysctl_set: yes
+  with_items:
+    - net.ipv4.conf.all.send_redirects
+    - net.ipv4.conf.default.send_redirects
+
+- name: Source routes are not accepted
+  sysctl:
+    state: present
+    name: "{{ item }}"
+    value: "0"
+    sysctl_set: yes
+  with_items:
+    - net.ipv4.conf.all.accept_source_route
+    - net.ipv4.conf.default.accept_source_route
+    - net.ipv6.conf.all.accept_source_route
+    - net.ipv6.conf.default.accept_source_route
+
+- name: TCP SYN cookies are enabled
+  sysctl:
+    state: present
+    name: net.ipv4.tcp_syncookies
+    value: "1"
+    sysctl_set: yes
+
+- name: Reverse-path filtering is enabled
+  sysctl:
+    state: present
+    name: "{{ item }}"
+    value: "1"
+    sysctl_set: yes
+  with_items:
+    - net.ipv4.conf.all.rp_filter
+    - net.ipv4.conf.default.rp_filter
+
+- name: Packets with impossible addresses are dropped
+  sysctl:
+    state: present
+    name: "{{ item }}"
+    value: "1"
+    sysctl_set: yes
+  with_items:
+    - net.ipv4.conf.all.log_martians
+    - net.ipv4.conf.default.log_martians
+
+- name: Forwarding is disabled
+  sysctl:
+    state: present
+    name: "{{ item }}"
+    value: "0"
+    sysctl_set: yes
+  with_items:
+    - net.ipv4.conf.all.forwarding
+    - net.ipv4.conf.default.forwarding
+    - net.ipv6.conf.all.forwarding
+    - net.ipv6.conf.default.forwarding
+
+- name: Firewall script is configured
+  copy:
+    dest: /usr/local/bin/firewall.sh
+    owner: root
+    group: root
+    mode: 0755
+    content: |
+      #!/usr/bin/env bash
+
+      set -e
+
+      if [ "$1" = 'clear' ]; then
+        iptables -P INPUT ACCEPT
+        iptables -P FORWARD ACCEPT
+        iptables -P OUTPUT ACCEPT
+        iptables -F
+        
+        ip6tables -P INPUT ACCEPT
+        ip6tables -P FORWARD ACCEPT
+        ip6tables -P OUTPUT ACCEPT
+        ip6tables -F
+        
+        exit 0
+      fi
+
+
+      iptables -P INPUT REJECT
+      iptables -P FORWARD DROP
+      iptables -P OUTPUT ACCEPT
+      iptables -F
+
+      ip6tables -P INPUT REJECT
+      ip6tables -P FORWARD DROP
+      ip6tables -P OUTPUT ACCEPT
+      ip6tables -F
+
+      iptables -A INPUT -j ACCEPT m state --state ESTABLISHED,RELATED
+      iptables -A INPUT -i lo -j ACCEPT
+      iptables -A INPUT -j ACCEPT -p icmp --icmp-type ping --limit 240/min
+      iptables -A INPUT -j ACCEPT -p icmp --icmp-type pong --limit 240/min
+
+      ip6tables -A INPUT -j ACCEPT m state --state ESTABLISHED,RELATED
+      ip6tables -A INPUT -i lo -j ACCEPT
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type destination-unreachable
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type packet-too-big
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type time-exceeded
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type parameter-problem
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type router-advertisement -m hl --hl-eq 255
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type neighbour-solicitation -m hl --hl-eq 255
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type neighbour-advevrtisement -m hl --hl-eq 255
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type echo-request --limit 240/min
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type echo-reply --limit 240/min
+
+      # Custom rules
+
+      iptables -A INPUT -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 22
+      ip6tables -A INPUT -j ACCEPT -s fe80::/112 -p tcp --dport 22
+
+      # Reject quickly on the local network
+      iptables -A INPUT -j REJECT -m hl --hl-eq 255
+
+- name: Firewall is a systemd service
+  copy:
+    dest: /etc/systemd/system/firewall.service
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      [Unit]
+      Description=IPTable Reload Script
+      After=network.targets
+
+      [Service]
+      Type=oneshot
+      RemainAfterExit=true
+      Restart=no
+      User=root
+      ExecStart=/usr/bin/env bash /usr/local/bin/firewall.sh up
+      ExecReload=/usr/bin/env bash /usr/local/bin/firewall.sh up
+      ExecStop=/usr/bin/env bash /usr/local/bin/firewall.sh clear
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: IPTables is installed
+  package:
+    state: present
+    name: iptables
+
+- name: Firewall service is running
+  service:
+    state: started
+    enabled: yes
+    name: firewall

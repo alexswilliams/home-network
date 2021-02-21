@@ -22,9 +22,11 @@
     exclusive: yes
 
 - name: Base system minimal tools are installed
-  pacman:
+  package:
     state: present
-    name: ["nano", "less"]
+    name:
+      - nano
+      - less
 
 - name: Alexw bashrc is configured
   copy:

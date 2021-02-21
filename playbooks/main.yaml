@@ -15,7 +15,7 @@
   hosts: archpi
   become: yes
   tasks:
-    - name: Set hostname
-      hostname:
-        name: "{{ hostname_to_set }}"
-      when: hostname_to_set is defined
+    - name: HOSTNAME
+      include_tasks: ./tasklists/hostname.yaml
+    - name: FIREWALL
+      include_tasks: ./tasklists/firewall.yaml
