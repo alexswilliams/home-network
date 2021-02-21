@@ -1,0 +1,34 @@
+- name: Create local user and add to sudo
+  hosts: archpi
+  remote_user: alarm
+  become: yes
+  become_method: su
+  become_user: root
+  ignore_unreachable: yes
+  vars:
+    ansible_user: alarm
+    ansible_ssh_pass: alarm
+    ansible_become_pass: root
+  tasks:
+    - name: Tasklist
+      include_tasks: local-user.yaml
+      when: ansible_facts['_facts_gathered'] is defined
+
+- name: Remove previous users
+  hosts: archpi
+  become: yes
+  tasks:
+    - name: Alarm user removed
+      user:
+        state: absent
+        name: alarm
+    - name: Alarm user's home dir removed
+      file:
+        state: absent
+        path: /home/alarm
+    - name: Lock root user
+      user:
+        state: present
+        name: root
+        password_lock: yes
+
