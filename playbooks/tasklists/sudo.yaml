@@ -15,3 +15,15 @@
       alexw ALL=(ALL) NOPASSWD: ALL
     validate: "/usr/sbin/visudo -cf %s"
 
+- name: Remove sudoers directory
+  file:
+    state: absent
+    path: /etc/sudoers.d
+
+- name: TEST Root and alexw can both sudo successfully
+  shell: "sudo -u alexw echo test && sudo -u alexw sudo echo test"
+  args:
+    warn: no
+  register: sudo_works
+  changed_when: false
+  failed_when: sudo_works.rc != 0

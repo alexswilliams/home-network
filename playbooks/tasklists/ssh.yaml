@@ -1,3 +1,9 @@
+- name: SSH genkeys service is disabled
+  systemd:
+    name: sshdgenkeys
+    state: stopped
+    enabled: no
+    masked: yes
 
 - name: SSH Daemon is configured
   copy:
@@ -10,12 +16,17 @@
       ListenAddress [::]:22
       ListenAddress 0.0.0.0:22
       HostKey /etc/ssh/ssh_host_ed25519_key
+      HostKeyAlgorithms ssh-ed25519-cert-v01@openssh.com,ssh-ed25519
+      KExAlgorithms curve25519-sha256,curve25519-sha256@libssh.org
+      Ciphers chacha20-poly1305@openssh.com
+      Macs umac-128-etm@openssh.com
 
       AllowUsers alexw
+      AuthenticationMethods publickey
       PubkeyAuthentication yes
       AuthorizedKeysFile .ssh/authorized_keys
 
-      LoginGraceTime 5
+      LoginGraceTime 10
       MaxAuthTries 2
       StrictModes yes
       PermitRootLogin no
@@ -31,16 +42,66 @@
       PermitTunnel no
       PermitTTY yes
       TcpKeepAlive yes
-      
+
       PrintMotd no
       PrintLastLog no
       Banner none
       Subsystem sftp /usr/lib/ssh/sftp-server
     validate: "/usr/bin/sshd -f %s -t"
   register: sshd_config_task
-  
-- name: Restart SSHD
+
+- name: ED25519 host key exists
+  shell: ssh-keygen -q -t ed25519 -b 521 -f /etc/ssh/ssh_host_ed25519_key -C "" -N "" && cat /etc/ssh/ssh_host_ed25519_key.pub
+  args:
+    creates: /etc/ssh/ssh_host_ed25519_key
+  register: new_host_key_task
+
+- name: Controller's known_hosts file contains new host key
+  become: no
+  known_hosts:
+    path: "~/.ssh/known_hosts"
+    state: present
+    name: "{{ inventory_hostname }}"
+    key: "{{ inventory_hostname }} {{ new_host_key_task.stdout_lines[0] }}"
+    hash_host: yes
+  delegate_to: localhost
+  when: new_host_key_task.changed
+
+- name: No unnecessary host keys exist
+  file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    - /etc/ssh/ssh_host_dsa_key
+    - /etc/ssh/ssh_host_dsa_key.pub
+    - /etc/ssh/ssh_host_rsa_key
+    - /etc/ssh/ssh_host_rsa_key.pub
+    - /etc/ssh/ssh_host_ecdsa_key
+    - /etc/ssh/ssh_host_ecdsa_key.pub
+
+- name: No DH moduli exist
+  file:
+    state: absent
+    path: /etc/ssh/moduli
+
+- name: Password logins disabled in PAM for SSH
+  lineinfile:
+    path: /etc/pam.d/sshd
+    state: absent
+    insertbefore: BOF
+    regex: 'auth[ \t]+include[ \t]+system-remote-login'
+
+- name: Root logins disallowed in PAM for SSH
+  lineinfile:
+    path: /etc/pam.d/sshd
+    state: present
+    insertbefore: BOF
+    regex: 'auth[ \t]+required[ \t]+pam_securetty.so'
+    line: "auth required pam_securetty.so"
+
+- name: SSH Daemon restarted when changes made
   service:
     name: sshd
     state: restarted
-  when: sshd_config_task.changed
+    enabled: yes
+  when: sshd_config_task.changed or new_host_key_task.changed

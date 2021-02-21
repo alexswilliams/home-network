@@ -13,9 +13,20 @@
     - name: LOCAL USER CREATED
       include_tasks: ./tasklists/local-user.yaml
       when: ansible_facts['nodename'] is defined
+
+    - name: Remove previous hard-coded host key
+      file:
+        state: absent
+        path: "{{ item }}"
+      with_items:
+        - /etc/ssh/ssh_host_ed25519_key
+        - /etc/ssh/ssh_host_ed25519_key.pub
+      when: ansible_facts['nodename'] is defined
+
     - name: SSH CONFIGURED
       include_tasks: ./tasklists/ssh.yaml
       when: ansible_facts['nodename'] is defined
+
     - name: SUDO CONFIGURED
       include_tasks: ./tasklists/sudo.yaml
       when: ansible_facts['nodename'] is defined

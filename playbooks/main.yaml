@@ -2,9 +2,6 @@
   hosts: archpi
   become: yes
   tasks:
-    - name: Facts
-      debug:
-        var: ansible_facts
     - name: CREATE LOCAL USER
       include_tasks: ./tasklists/local-user.yaml
     - name: SSH CONFIGURED
@@ -20,5 +17,5 @@
   tasks:
     - name: Set hostname
       hostname:
-        name: '{{ hostname_to_set }}'
+        name: "{{ hostname_to_set }}"
       when: hostname_to_set is defined

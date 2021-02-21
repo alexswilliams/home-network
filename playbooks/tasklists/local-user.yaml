@@ -11,8 +11,8 @@
     state: directory
     path: /home/alexw/.ssh
     owner: alexw
-    group: root
-    mode: 0750
+    group: alexw
+    mode: 0700
 
 - name: Alexw has SSH public keys from github
   authorized_key:
