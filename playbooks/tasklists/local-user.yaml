@@ -1,0 +1,41 @@
+- name: Alexw user exists
+  user:
+    state: present
+    name: alexw
+    create_home: yes
+    home: /home/alexw
+    shell: /bin/bash
+
+- name: Alexw's SSH folder exists
+  file:
+    state: directory
+    path: /home/alexw/.ssh
+    owner: alexw
+    group: root
+    mode: 0750
+
+- name: Alexw has SSH public keys from github
+  authorized_key:
+    user: alexw
+    state: present
+    key: https://github.com/alexswilliams.keys
+    exclusive: yes
+
+- name: Base system minimal tools are installed
+  pacman:
+    state: present
+    name: ["nano", "less"]
+
+- name: Alexw bashrc is configured
+  copy:
+    dest: /home/alexw/.bashrc
+    group: alexw
+    owner: alexw
+    mode: 0644
+    content: |
+      export EDITOR=nano
+      export PAGER=less
+      [[ $- != *i* ]] && return
+      alias ls='ls --color=auto'
+      PS1='[\u@\h \W]\$ '
+    validate: "/bin/bash %s"

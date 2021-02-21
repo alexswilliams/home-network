@@ -1,0 +1,13 @@
+- name: Alarm user removed
+  user:
+    state: absent
+    name: alarm
+- name: Alarm user's home dir removed
+  file:
+    state: absent
+    path: /home/alarm
+- name: Lock root user
+  user:
+    state: present
+    name: root
+    password_lock: yes

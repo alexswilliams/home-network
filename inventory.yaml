@@ -5,4 +5,4 @@ archpi:
       ansible_python_interpreter: /usr/bin/python3.9
       ansible_user: alexw
       ansible_become_method: sudo
-      
+      hostname_to_set: pi

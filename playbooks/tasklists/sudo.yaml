@@ -1,0 +1,17 @@
+- name: Sudo is installed
+  pacman:
+    state: present
+    name: ["sudo"]
+
+- name: Sudoers is set up
+  copy:
+    dest: /etc/sudoers
+    group: root
+    owner: root
+    mode: 0440
+    content: |
+      Defaults env_keep += "EDITOR PAGER LANG LANGUAGE LC_*"
+      root  ALL=(ALL) ALL
+      alexw ALL=(ALL) NOPASSWD: ALL
+    validate: "/usr/sbin/visudo -cf %s"
+

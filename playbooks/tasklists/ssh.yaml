@@ -1,0 +1,46 @@
+
+- name: SSH Daemon is configured
+  copy:
+    dest: /etc/ssh/sshd_config
+    group: root
+    owner: root
+    mode: 0644
+    content: |
+      Port 22
+      ListenAddress [::]:22
+      ListenAddress 0.0.0.0:22
+      HostKey /etc/ssh/ssh_host_ed25519_key
+
+      AllowUsers alexw
+      PubkeyAuthentication yes
+      AuthorizedKeysFile .ssh/authorized_keys
+
+      LoginGraceTime 5
+      MaxAuthTries 2
+      StrictModes yes
+      PermitRootLogin no
+      UsePAM yes
+      ChallengeResponseAuthentication no
+      PasswordAuthentication no
+      HostbasedAuthentication no
+      KerberosAuthentication no
+      GSSAPIAuthentication no
+
+      AllowTcpForwarding yes
+      AllowAgentForwarding yes
+      PermitTunnel no
+      PermitTTY yes
+      TcpKeepAlive yes
+      
+      PrintMotd no
+      PrintLastLog no
+      Banner none
+      Subsystem sftp /usr/lib/ssh/sftp-server
+    validate: "/usr/bin/sshd -f %s -t"
+  register: sshd_config_task
+  
+- name: Restart SSHD
+  service:
+    name: sshd
+    state: restarted
+  when: sshd_config_task.changed

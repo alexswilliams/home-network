@@ -1,0 +1,24 @@
+- name: Verify bootstrap
+  hosts: archpi
+  become: yes
+  tasks:
+    - name: Facts
+      debug:
+        var: ansible_facts
+    - name: CREATE LOCAL USER
+      include_tasks: ./tasklists/local-user.yaml
+    - name: SSH CONFIGURED
+      include_tasks: ./tasklists/ssh.yaml
+    - name: SUDO CONFIGURED
+      include_tasks: ./tasklists/sudo.yaml
+    - name: REMOVE DEFAULT USERS
+      include_tasks: ./tasklists/remove-default-users.yaml
+
+- name: Machine Setup
+  hosts: archpi
+  become: yes
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: '{{ hostname_to_set }}'
+      when: hostname_to_set is defined
