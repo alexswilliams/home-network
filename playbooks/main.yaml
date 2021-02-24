@@ -2,6 +2,8 @@
   hosts: archpi
   become: yes
   tasks:
+    - name: PACMAN INITIALISED
+      include_tasks: ./tasklists/pacman-init.yaml
     - name: CREATE LOCAL USER
       include_tasks: ./tasklists/local-user.yaml
     - name: SSH CONFIGURED

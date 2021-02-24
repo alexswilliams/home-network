@@ -10,6 +10,10 @@
     ansible_ssh_pass: alarm
     ansible_become_pass: root
   tasks:
+    - name: PACMAN INITIALISED
+      include_tasks: ./tasklists/pacman-init.yaml
+      when: ansible_facts['nodename'] is defined
+
     - name: LOCAL USER CREATED
       include_tasks: ./tasklists/local-user.yaml
       when: ansible_facts['nodename'] is defined

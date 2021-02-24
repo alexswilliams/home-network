@@ -1,0 +1,9 @@
+- name: Pacman keyring initialised
+  shell: pacman-key --init
+  args:
+    creates: /etc/pacman.d/gnupg
+  register: pacman_keyring_initialised
+
+- name: Pacman keyring populated with archlinuxarm
+  shell: pacman-key --populate archlinuxarm
+  when: pacman_keyring_initialised.changed
