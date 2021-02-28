@@ -1,4 +1,25 @@
-- name: Create local user and add to sudo
+- name: Run a system upgrade and install python
+  hosts: archpi
+  remote_user: alarm
+  become: yes
+  become_method: su
+  become_user: root
+  ignore_unreachable: yes
+  gather_facts: false
+  serial: 1
+  vars:
+    ansible_user: alarm
+    ansible_ssh_pass: alarm
+    ansible_become_pass: root
+    ansible_become_method: su
+    ansible_host_key_checking: no
+  tasks:
+    raw: bash -c "test -e /usr/bin/python || (pacman-key --init && pacman-key --populate archlinuxarm && pacman -Syu && pacman -S python)"
+    register: python_bootstrap
+    changed_when: python_bootstrap.stdout != ""
+
+
+- name: Create local user, add to sudo, secure ssh
   hosts: archpi
   remote_user: alarm
   become: yes
@@ -9,6 +30,8 @@
     ansible_user: alarm
     ansible_ssh_pass: alarm
     ansible_become_pass: root
+    ansible_become_method: su
+    ansible_host_key_checking: no
   tasks:
     - name: PACMAN INITIALISED
       include_tasks: ./tasklists/pacman-init.yaml
@@ -27,17 +50,25 @@
         - /etc/ssh/ssh_host_ed25519_key.pub
       when: ansible_facts['nodename'] is defined
 
+    - name: SUDO CONFIGURED
+      include_tasks: ./tasklists/sudo.yaml
+      when: ansible_facts['nodename'] is defined
+
     - name: SSH CONFIGURED
       include_tasks: ./tasklists/ssh.yaml
       when: ansible_facts['nodename'] is defined
-
-    - name: SUDO CONFIGURED
-      include_tasks: ./tasklists/sudo.yaml
+    
+    - name: Reboot
+      remote_user: alexw
+      reboot:
+        post_reboot_delay: 30
+        reboot_timeout: 180
       when: ansible_facts['nodename'] is defined
 
 - name: Remove previous users
   hosts: archpi
   become: yes
+  become_user: root
   tasks:
     - name: REMOVE EXISTING USERS
       include_tasks: ./tasklists/remove-default-users.yaml

@@ -1,7 +1,7 @@
 - name: SSH is installed
   package:
     state: present
-    name: ssh
+    name: openssh
 
 - name: SSH genkeys service is disabled
   systemd:
@@ -9,6 +9,23 @@
     state: stopped
     enabled: no
     masked: yes
+
+- name: ED25519 host key exists
+  shell: ssh-keygen -q -t ed25519 -b 521 -f /etc/ssh/ssh_host_ed25519_key -C "" -N "" && cat /etc/ssh/ssh_host_ed25519_key.pub
+  args:
+    creates: /etc/ssh/ssh_host_ed25519_key
+  register: new_host_key_task
+
+- name: Controller's known_hosts file contains new host key
+  become: no
+  known_hosts:
+    path: "~/.ssh/known_hosts"
+    state: present
+    name: "{{ inventory_hostname }}"
+    key: "{{ inventory_hostname }} {{ new_host_key_task.stdout_lines[0] }}"
+    hash_host: yes
+  delegate_to: localhost
+  when: new_host_key_task.changed
 
 - name: SSH Daemon is configured
   copy:
@@ -54,23 +71,6 @@
       Subsystem sftp /usr/lib/ssh/sftp-server
     validate: "/usr/bin/sshd -f %s -t"
   register: sshd_config_task
-
-- name: ED25519 host key exists
-  shell: ssh-keygen -q -t ed25519 -b 521 -f /etc/ssh/ssh_host_ed25519_key -C "" -N "" && cat /etc/ssh/ssh_host_ed25519_key.pub
-  args:
-    creates: /etc/ssh/ssh_host_ed25519_key
-  register: new_host_key_task
-
-- name: Controller's known_hosts file contains new host key
-  become: no
-  known_hosts:
-    path: "~/.ssh/known_hosts"
-    state: present
-    name: "{{ inventory_hostname }}"
-    key: "{{ inventory_hostname }} {{ new_host_key_task.stdout_lines[0] }}"
-    hash_host: yes
-  delegate_to: localhost
-  when: new_host_key_task.changed
 
 - name: No unnecessary host keys exist
   file:

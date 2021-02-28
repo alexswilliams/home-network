@@ -1,0 +1,10 @@
+- name: Apply Firewall
+  hosts: archpi
+  become: yes
+  tasks:
+    - name: FIREWALL
+      include_tasks: ./tasklists/firewall.yaml
+    - name: Firewall restarted
+      service:
+        state: restarted
+        name: firewall

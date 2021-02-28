@@ -6,10 +6,10 @@
       include_tasks: ./tasklists/pacman-init.yaml
     - name: CREATE LOCAL USER
       include_tasks: ./tasklists/local-user.yaml
-    - name: SSH CONFIGURED
-      include_tasks: ./tasklists/ssh.yaml
     - name: SUDO CONFIGURED
       include_tasks: ./tasklists/sudo.yaml
+    - name: SSH CONFIGURED
+      include_tasks: ./tasklists/ssh.yaml
     - name: REMOVE DEFAULT USERS
       include_tasks: ./tasklists/remove-default-users.yaml
 
@@ -19,5 +19,7 @@
   tasks:
     - name: HOSTNAME
       include_tasks: ./tasklists/hostname.yaml
+    - name: SYSCTL RULES
+      include_tasks: ./tasklists/sysctl-rules.yaml
     - name: FIREWALL
       include_tasks: ./tasklists/firewall.yaml

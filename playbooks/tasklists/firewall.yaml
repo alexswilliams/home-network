@@ -1,87 +1,3 @@
-- name: Non-specific ICMP echos are ignored
-  sysctl:
-    state: present
-    name: "{{ item }}"
-    value: "1"
-    sysctl_set: yes
-  with_items:
-    - net.ipv4.icmp_echo_ignore_broadcasts
-    - net.ipv6.icmp.echo_ignore_anycast
-    - net.ipv6.icmp.echo_ignore_multicast
-
-- name: ICMP redirects are not accepted
-  sysctl:
-    state: present
-    name: "{{ item }}"
-    value: "0"
-    sysctl_set: yes
-  with_items:
-    - net.ipv4.conf.all.accept_redirects
-    - net.ipv4.conf.default.accept_redirects
-    - net.ipv6.conf.all.accept_redirects
-    - net.ipv6.conf.default.accept_redirects
-
-- name: ICMP redirects are not sent
-  sysctl:
-    state: present
-    name: "{{ item }}"
-    value: "0"
-    sysctl_set: yes
-  with_items:
-    - net.ipv4.conf.all.send_redirects
-    - net.ipv4.conf.default.send_redirects
-
-- name: Source routes are not accepted
-  sysctl:
-    state: present
-    name: "{{ item }}"
-    value: "0"
-    sysctl_set: yes
-  with_items:
-    - net.ipv4.conf.all.accept_source_route
-    - net.ipv4.conf.default.accept_source_route
-    - net.ipv6.conf.all.accept_source_route
-    - net.ipv6.conf.default.accept_source_route
-
-- name: TCP SYN cookies are enabled
-  sysctl:
-    state: present
-    name: net.ipv4.tcp_syncookies
-    value: "1"
-    sysctl_set: yes
-
-- name: Reverse-path filtering is enabled
-  sysctl:
-    state: present
-    name: "{{ item }}"
-    value: "1"
-    sysctl_set: yes
-  with_items:
-    - net.ipv4.conf.all.rp_filter
-    - net.ipv4.conf.default.rp_filter
-
-- name: Packets with impossible addresses are dropped
-  sysctl:
-    state: present
-    name: "{{ item }}"
-    value: "1"
-    sysctl_set: yes
-  with_items:
-    - net.ipv4.conf.all.log_martians
-    - net.ipv4.conf.default.log_martians
-
-- name: Forwarding is disabled
-  sysctl:
-    state: present
-    name: "{{ item }}"
-    value: "0"
-    sysctl_set: yes
-  with_items:
-    - net.ipv4.conf.all.forwarding
-    - net.ipv4.conf.default.forwarding
-    - net.ipv6.conf.all.forwarding
-    - net.ipv6.conf.default.forwarding
-
 - name: Firewall script is configured
   copy:
     dest: /usr/local/bin/firewall.sh
@@ -93,55 +9,77 @@
 
       set -e
 
+      iptables -P INPUT ACCEPT
+      iptables -P FORWARD ACCEPT
+      iptables -P OUTPUT ACCEPT
+      ip6tables -P INPUT ACCEPT
+      ip6tables -P FORWARD ACCEPT
+      ip6tables -P OUTPUT ACCEPT
+
+      iptables -F
+      ip6tables -F
+
       if [ "$1" = 'clear' ]; then
-        iptables -P INPUT ACCEPT
-        iptables -P FORWARD ACCEPT
-        iptables -P OUTPUT ACCEPT
-        iptables -F
-        
-        ip6tables -P INPUT ACCEPT
-        ip6tables -P FORWARD ACCEPT
-        ip6tables -P OUTPUT ACCEPT
-        ip6tables -F
-        
         exit 0
       fi
 
-
-      iptables -P INPUT REJECT
-      iptables -P FORWARD DROP
-      iptables -P OUTPUT ACCEPT
-      iptables -F
-
-      ip6tables -P INPUT REJECT
-      ip6tables -P FORWARD DROP
-      ip6tables -P OUTPUT ACCEPT
-      ip6tables -F
-
-      iptables -A INPUT -j ACCEPT m state --state ESTABLISHED,RELATED
+      iptables -A INPUT -j ACCEPT -m conntrack --ctstate ESTABLISHED,RELATED
       iptables -A INPUT -i lo -j ACCEPT
-      iptables -A INPUT -j ACCEPT -p icmp --icmp-type ping --limit 240/min
-      iptables -A INPUT -j ACCEPT -p icmp --icmp-type pong --limit 240/min
+      iptables -A INPUT -m conntrack --ctstate INVALID -j DROP # Never reject when in invalid state
+      iptables -A INPUT -j ACCEPT -p icmp --icmp-type ping -m limit --limit 240/min -s 192.168.1.0/24
+      iptables -A INPUT -j ACCEPT -p icmp --icmp-type pong -m limit --limit 240/min
 
-      ip6tables -A INPUT -j ACCEPT m state --state ESTABLISHED,RELATED
+      ip6tables -A INPUT -j ACCEPT -m conntrack --ctstate ESTABLISHED,RELATED
       ip6tables -A INPUT -i lo -j ACCEPT
-      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type destination-unreachable
-      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type packet-too-big
-      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type time-exceeded
-      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type parameter-problem
-      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type router-advertisement -m hl --hl-eq 255
-      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type neighbour-solicitation -m hl --hl-eq 255
-      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type neighbour-advevrtisement -m hl --hl-eq 255
-      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type echo-request --limit 240/min
-      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type echo-reply --limit 240/min
+      ip6tables -A INPUT -m conntrack --ctstate INVALID -j DROP # Never reject when in invalid state
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type destination-unreachable -m limit --limit 240/min
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type packet-too-big -m limit --limit 240/min
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type time-exceeded -m limit --limit 240/min
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type parameter-problem -m limit --limit 240/min
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type router-advertisement -m hl --hl-eq 255 -d ff02::1 -s fe80::/32
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type neighbour-solicitation -m hl --hl-eq 255 -d ff02::/32 -s fe80::/32
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type neighbour-advertisement -m hl --hl-eq 255 -d fe80::/32 # Only accept advertisments to link local addresses
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type echo-request -m limit --limit 240/min -s fe80::/32
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type echo-reply -m limit --limit 240/min
+
+      # Multicast Name Resolution, because we're not savages
+      iptables -A INPUT -j ACCEPT -p udp --dport 5355 -s 192.168.1.0/24 -d 224.0.0.252 -m ttl --ttl 1
+      iptables -A INPUT -j ACCEPT -p igmp -s 192.168.1.0/24 -d 224.0.0.252 -m ttl --ttl 1
+      ip6tables -A INPUT -j ACCEPT -p udp --dport 5355 -s fe80::/32 -d ff02::1:3 -m hl --hl-eq 1
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 -s fe80::/32 -d ff02::1:3 -m hl --hl-eq 1
+
+      # GMP, because we live in a world of multicast now
+      iptables -A INPUT -j ACCEPT -s 192.168.1.0/24 -d 224.0.0.0/8 -p igmp
+      ip6tables -A INPUT -j ACCEPT -s fe80::/32 -d ff30::/24 -p icmpv6
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type 143 -s fe80::/32 -d ff02::16 -m hl --hl-eq 1 -m comment --comment "Multicast Listener Reports"
+
+      # RIP
+      ip6tables -A INPUT -j ACCEPT -p udp --dport 521 -s fe80::/32 -d ff02::9 -m hl --hl-eq 255 -m comment --comment "RIPng from router"
+
 
       # Custom rules
+      iptables -A INPUT -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 22 -m comment --comment "SSH"
+      ip6tables -A INPUT -j ACCEPT -s fe80::/32 -p tcp --dport 22 -m comment --comment "SSH"
 
-      iptables -A INPUT -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 22
-      ip6tables -A INPUT -j ACCEPT -s fe80::/112 -p tcp --dport 22
+      
+      # Common drops for the sake of log noise
+      iptables -A INPUT -j DROP -p udp -m addrtype --dst-type BROADCAST --dport 9999 -m comment --comment "TPLink Kasa discovery protocol"
+      iptables -A INPUT -j DROP -p udp -m addrtype --dst-type BROADCAST --dport 10101 -m comment --comment "Google Home discovery"
+      for cmd in iptables ip6tables; do
+        $cmd -A INPUT -j DROP -p udp -m multiport --dports 137,138 -m comment --comment "netbios chatter"
+        $cmd -A INPUT -j DROP -p udp --dport 17500 -m comment --comment "dropbox chatter"
+      done
+
+      iptables -A INPUT -j LOG --log-prefix "[Firewall IPv4] Reject: "
+      ip6tables -A INPUT -j LOG --log-prefix "[Firewall IPv6] Reject: "
 
       # Reject quickly on the local network
-      iptables -A INPUT -j REJECT -m hl --hl-eq 255
+      ip6tables -A INPUT -j REJECT -m hl --hl-eq 255 --reject-with icmp6-adm-prohibited
+
+      iptables -A INPUT -j DROP
+      iptables -A FORWARD -j DROP
+      ip6tables -A INPUT -j DROP
+      ip6tables -A FORWARD -j DROP
 
 - name: Firewall is a systemd service
   copy:
