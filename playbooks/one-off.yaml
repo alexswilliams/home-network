@@ -1,0 +1,8 @@
+- name: One Off
+  hosts: archpi
+  become: yes
+  tasks:
+    # - name: FIREWALL
+    #   include_tasks: ./tasklists/firewall.yaml
+    - name: MDNS
+      include_tasks: ./tasklists/mdns.yaml

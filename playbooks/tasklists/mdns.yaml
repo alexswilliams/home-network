@@ -1,0 +1,110 @@
+- name: mDNS packages are installed
+  package:
+    state: present
+    name:
+      - avahi
+      - nss-mdns
+
+- name: Avahi configured
+  register: avahi_daemon_config
+  copy:
+    dest: /etc/avahi/avahi-daemon.conf
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      [SERVER]
+      domain-name=local
+      use-ipv4=yes
+      use-ipv6=yes
+      allow-interfaces=eth0
+      use-iff-running=yes
+      # Required so that systemd can work out if it started or not
+      enable-dbus=yes
+      disallow-other-stacks=yes
+      allow-point-to-point=no
+      cache-entries-max=2048
+      ratelimit-interval-usec=10000
+      ratelimit-burst=20
+      
+      [WIDE-AREA]
+      enable-wide-area=no
+      
+      [PUBLISH]
+      disable-publishing=no
+      disable-user-service-publishing=no
+      add-service-cookie=yes
+      publish-addresses=yes
+      publish-hinfo=no
+      publish-workstation=no
+      publish-domain=yes
+      publish-resolv-conf-dns-servers=no
+      publish-aaaa-on-ipv4=yes
+      publish-a-on-ipv6=no
+      
+      [REFLECTOR]
+      enable-reflector=no
+      
+      [RLIMITS]
+      rlimit-core=0
+      rlimit-fsize=0
+      rlimit-nofile=30
+      rlimit-nproc=3
+
+- name: SSH Service Published on mDNS
+  register: ssh_mdns_service
+  copy:
+    dest: /etc/avahi/services/ssh.service
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      <service-group>
+        <name replace-wildcards="yes">%h</name>
+        <service>
+          <type>_ssh._tcp</type>
+          <port>22</port>
+        </service>
+      </service-group>
+
+
+- name: SystemD ResolveD service is disabled
+  systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: no
+    masked: yes
+
+- name: Avahi Daemon changes are applied
+  service:
+    state: restarted
+    enabled: yes
+    name: avahi-daemon
+  when: avahi_daemon_config.changed or ssh_mdns_service.changed
+
+- name: mDNS Config Set
+  copy:
+    dest: /etc/mdns.allow
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      .local.
+      .local
+
+- name: Hosts File Set
+  copy:
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      # No static entries
+
+- name: NSSwitch Hosts Entry Configured
+  lineinfile:
+    path: /etc/nsswitch.conf
+    state: present
+    insertbefore: EOF
+    regex: '^hosts: '
+    line: "hosts: myhostname files mdns_minimal [NOTFOUND=return] dns mdns"
