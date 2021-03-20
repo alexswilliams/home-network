@@ -44,3 +44,37 @@
   locale_gen:
     name: en_GB.UTF-8
     state: present
+
+- name: Configure systemd journald
+  register: journald_config
+  copy:
+    dest: /etc/systemd/journald.conf
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      [Journal]
+      Storage=volatile
+      Compress=4K
+      Seal=no
+      SplitMode=none
+      RuntimeMaxUse=16M
+      ForwardToSyslog=no
+      ForwardToKMsg=no
+      ForwardToConsole=no
+      ForwardToWall=yes
+      MaxLevelStore=notice
+      MaxLevelWall=warning
+      ReadKMsg=no
+      Audit=no
+
+- name: Apply systemd journald config
+  service:
+    name: systemd-journald
+    state: restarted
+  when: journald_config.changed
+
+- name: Old Journald Folder does not exist
+  file:
+    path: /var/log/journal
+    state: absent
