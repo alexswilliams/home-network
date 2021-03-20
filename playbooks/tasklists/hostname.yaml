@@ -1,4 +1,0 @@
-- name: Set hostname
-  hostname:
-    name: "{{ hostname_to_set }}"
-  when: hostname_to_set is defined

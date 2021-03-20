@@ -1,0 +1,46 @@
+- name: Set hostname
+  hostname:
+    name: "{{ hostname_to_set }}"
+  when: hostname_to_set is defined
+
+- name: Set timezone to London
+  timezone:
+    name: Europe/London
+
+- name: Configure systemd timesyncd
+  register: timesyncd_config
+  copy:
+    dest: /etc/systemd/timesyncd.conf
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      [Time]
+      NTP=uk.pool.ntp.org
+      RootDistanceMaxSec=5
+      PollIntervalMinSec=3600
+      PollIntervalMaxSec=86400
+
+- name: Apply timesyncd changes
+  service:
+    name: systemd-timesyncd
+    state: restarted
+  when: timesyncd_config.changed
+
+- name: Use fake hw clock if needed
+  package:
+    name: fake-hwclock
+    state: present
+  when: no_hw_clock is defined
+
+- name: Enable fake-hwclock service
+  service:
+    name: fake-hwclock
+    state: started
+    enabled: yes
+  when: no_hw_clock is defined
+
+- name: Generate GB locale
+  locale_gen:
+    name: en_GB.UTF-8
+    state: present

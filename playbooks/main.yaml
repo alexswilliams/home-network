@@ -17,8 +17,8 @@
   hosts: archpi
   become: yes
   tasks:
-    - name: HOSTNAME
-      include_tasks: ./tasklists/hostname.yaml
+    - name: HOST_BASICS
+      include_tasks: ./tasklists/host-basics.yaml
     - name: SYSCTL RULES
       include_tasks: ./tasklists/sysctl-rules.yaml
     - name: FIREWALL

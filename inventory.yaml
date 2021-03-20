@@ -7,4 +7,5 @@ archpi:
       ansible_become_method: sudo
       
       hostname_to_set: pi
+      no_hw_clock: true
       swap_device: mmcblk0p2

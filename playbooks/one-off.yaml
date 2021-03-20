@@ -2,7 +2,5 @@
   hosts: archpi
   become: yes
   tasks:
-    # - name: FIREWALL
-    #   include_tasks: ./tasklists/firewall.yaml
-    - name: MDNS
-      include_tasks: ./tasklists/mdns.yaml
+    - name: Host_Basics
+      include_tasks: ./tasklists/host-basics.yaml
