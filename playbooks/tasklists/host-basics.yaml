@@ -5,6 +5,8 @@
       - nano
       - less
       - htop
+      - lsof
+      - lm_sensors
 
 - name: Set hostname
   hostname:
