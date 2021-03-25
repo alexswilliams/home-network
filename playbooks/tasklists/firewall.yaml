@@ -97,7 +97,7 @@
     content: |
       [Unit]
       Description=IPTable Reload Script
-      After=network.targets
+      After=systemd-networkd.targets
 
       [Service]
       Type=oneshot

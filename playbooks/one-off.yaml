@@ -2,5 +2,5 @@
   hosts: archpi
   become: yes
   tasks:
-    - name: CLEAN_BASE_PACKAGES
-      include_tasks: ./tasklists/unneeded-base-packages.yaml
+    - name: HOST DNS
+      include_tasks: ./tasklists/local-dns.yaml
