@@ -34,3 +34,32 @@
       alias ls='ls --color=auto'
       PS1='[\u@\h \W]\$ '
     validate: "/bin/bash %s"
+
+- name: SSH ControlMasters directory exists
+  file:
+    state: directory
+    path: /home/alexw/.ssh/controlmasters
+    recurse: yes
+    owner: alexw
+    group: alexw
+    mode: 0770
+
+- name: Alexw ssh config is configured
+  copy:
+    dest: /home/alexw/.ssh/config
+    group: alexw
+    owner: alexw
+    mode: 0664
+    content: |
+      Host *
+        ControlPath ~/.ssh/controlmasters/%r@%h:%p
+        ControlMaster auto
+        ControlPersist 2m
+
+- name: Alexw toprc is configured
+  copy:
+    dest: /home/alexw/.config/procps/toprc
+    src: ../files/toprc
+    group: alexw
+    owner: alexw
+    mode: 0644

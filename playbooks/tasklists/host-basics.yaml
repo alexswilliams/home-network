@@ -8,6 +8,14 @@
       - lsof
       - lm_sensors
 
+- name: No MotD
+  pamd:
+    state: absent
+    name: system-login
+    type: session
+    control: optional
+    module_path: pam_motd.so
+
 - name: Set hostname
   hostname:
     name: "{{ hostname_to_set }}"

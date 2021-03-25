@@ -2,5 +2,5 @@
   hosts: archpi
   become: yes
   tasks:
-    - name: HOST DNS
-      include_tasks: ./tasklists/local-dns.yaml
+    - name: HOST BASICS
+      include_tasks: ./tasklists/host-basics.yaml
