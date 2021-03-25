@@ -21,13 +21,6 @@
     key: https://github.com/alexswilliams.keys
     exclusive: yes
 
-- name: Base system minimal tools are installed
-  package:
-    state: present
-    name:
-      - nano
-      - less
-
 - name: Alexw bashrc is configured
   copy:
     dest: /home/alexw/.bashrc

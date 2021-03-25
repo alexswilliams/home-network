@@ -1,3 +1,11 @@
+- name: Base system minimal tools are installed
+  package:
+    state: present
+    name:
+      - nano
+      - less
+      - htop
+
 - name: Set hostname
   hostname:
     name: "{{ hostname_to_set }}"
