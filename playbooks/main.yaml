@@ -17,6 +17,8 @@
   hosts: archpi
   become: yes
   tasks:
+    - name: CLEAN_BASE_PACKAGES
+      include_tasks: ./tasklists/unneeded-base-packages.yaml
     - name: HOST_BASICS
       include_tasks: ./tasklists/host-basics.yaml
     - name: SYSCTL RULES

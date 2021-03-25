@@ -8,4 +8,5 @@ archpi:
       
       hostname_to_set: pi
       no_hw_clock: true
+      no_wifi: true
       swap_device: mmcblk0p2

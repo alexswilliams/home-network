@@ -1,0 +1,7 @@
+- name: Wifi and bluetooth removed
+  package:
+    state: absent
+    name:
+      - wireless_tools
+      - wpa_supplicant
+  when: no_wifi is defined
