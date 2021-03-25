@@ -23,8 +23,8 @@
       include_tasks: ./tasklists/sysctl-rules.yaml
     - name: FIREWALL
       include_tasks: ./tasklists/firewall.yaml
-    - name: MDNS
-      include_tasks: ./tasklists/mdns.yaml
+    - name: LOCAL DNS
+      include_tasks: ./tasklists/local-dns.yaml
     - name: TOOLS
       include_tasks: ./tasklists/tools.yaml
       

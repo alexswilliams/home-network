@@ -101,6 +101,68 @@
     content: |
       # No static entries
 
+- name: Resolv Conf Set
+  copy:
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      nameserver 2606:4700:4700::1001
+      nameserver 2001:4860:4860::8844
+      nameserver 2606:4700:4700::1111
+      nameserver 2001:4860:4860::8888
+      nameserver fe80::1:1%eth0
+      nameserver 1.0.0.1
+      nameserver 8.8.4.4
+      nameserver 1.1.1.1
+      nameserver 8.8.8.8
+      nameserver 192.168.1.1
+      search local home.alexswilliams.co.uk alexswilliams.co.uk
+      options ndots:1
+      options timeout:1
+      options attempts:1
+      options edns0
+
+- name: GAI Config Set
+  copy:
+    dest: /etc/gai.conf
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      reload no
+      
+      # Desirable:
+      # Loopback
+      precedence ::1/128 100
+      # Link Local
+      precedence fe80::/10 50
+      # Benchmarking route
+      precedence 2001:2::/48 45
+      # ANYWHERE ELSE
+      precedence ::/0 40
+      
+      # Undesirable:
+      # 6to4
+      precedence 2002::/32 20
+      # Teredo
+      precedence 2001::/16 10
+      # NAT64
+      precedence 64:ff9b::/96 9
+      # 6over4
+      precedence fe80::/96 8
+      # ipv4-mapped
+      precedence ::ffff:0:0/96 7
+      # ipv4-translated
+      precedence ::ffff:0:0:0/96 6
+      # discardable - don't prefer black hole addresses
+      precedence 100::/64 5
+      # documentation - possible misconfiguration
+      precedence 2001:db8::/32 4
+      # site-local, if you can work out what that means
+      precedence fec0::/10 2
+
 - name: NSSwitch Hosts Entry Configured
   lineinfile:
     path: /etc/nsswitch.conf
