@@ -63,7 +63,7 @@
       # RIP
       ip6tables -A INPUT -j ACCEPT -p udp --dport 521 -s fe80::/32 -d ff02::9 -m hl --hl-eq 255 -m comment --comment "RIPng from router"
 
-      # DHCPv6
+      # DHCP
       ip6tables -A INPUT -j ACCEPT -p udp --dport 546 --sport 547 -s fe80::1:1/32 -m hl --hl-eq 64 -m comment --comment "DHCPv6 from router"
 
 
@@ -73,6 +73,7 @@
 
       
       # Common drops for the sake of log noise
+      iptables -A INPUT -j DROP -p udp --dport 67 --sport 68 -d 255.255.255.255 -m comment --comment "DHCP broadcasts from other devices"
       iptables -A INPUT -j DROP -p udp -m addrtype --dst-type BROADCAST --dport 9999 -m comment --comment "TPLink Kasa discovery protocol"
       iptables -A INPUT -j DROP -p udp -m addrtype --dst-type BROADCAST --dport 10101 -m comment --comment "Google Home discovery"
       for cmd in iptables ip6tables; do
@@ -101,6 +102,7 @@
       [Unit]
       Description=IPTable Reload Script
       After=systemd-networkd.targets
+      Requires=systemd-networkd.targets
 
       [Service]
       Type=oneshot
