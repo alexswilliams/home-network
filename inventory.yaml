@@ -1,12 +1,22 @@
 archpi:
   hosts:
-    192.168.1.4:
+    # 192.168.1.4:
+    #   ansible_connection: ssh
+    #   ansible_python_interpreter: /usr/bin/python3.9
+    #   ansible_user: alexw
+    #   ansible_become_method: sudo
+      
+    #   hostname_to_set: pi
+    #   no_hw_clock: true
+    #   no_wifi: true
+    #   swap_device: mmcblk0p2
+
+    192.168.1.5:
       ansible_connection: ssh
       ansible_python_interpreter: /usr/bin/python3.9
       ansible_user: alexw
       ansible_become_method: sudo
       
-      hostname_to_set: pi
+      hostname_to_set: deskpi
       no_hw_clock: true
-      no_wifi: true
-      swap_device: mmcblk0p2
+      swap_device: mmcblk0p3

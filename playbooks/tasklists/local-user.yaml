@@ -56,6 +56,15 @@
         ControlMaster auto
         ControlPersist 2m
 
+- name: ProcPS Config directory exists
+  file:
+    state: directory
+    path: /home/alexw/.config/procps
+    recurse: yes
+    owner: alexw
+    group: alexw
+    mode: 0770
+
 - name: Alexw toprc is configured
   copy:
     dest: /home/alexw/.config/procps/toprc

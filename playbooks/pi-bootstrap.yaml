@@ -14,9 +14,9 @@
     ansible_become_method: su
     ansible_host_key_checking: no
   tasks:
-    raw: bash -c "test -e /usr/bin/python || (pacman-key --init && pacman-key --populate archlinuxarm && pacman -Syu && pacman -S python)"
-    register: python_bootstrap
-    changed_when: python_bootstrap.stdout != ""
+    - raw: bash -c "test -e /usr/bin/python || (pacman-key --init && pacman-key --populate archlinuxarm && pacman -Syu --noconfirm && pacman -S python --noconfirm)"
+      register: python_bootstrap
+      changed_when: python_bootstrap.stdout != ""
 
 
 - name: Create local user, add to sudo, secure ssh
@@ -62,13 +62,5 @@
       remote_user: alexw
       reboot:
         post_reboot_delay: 30
-        reboot_timeout: 180
+        reboot_timeout: 10
       when: ansible_facts['nodename'] is defined
-
-- name: Remove previous users
-  hosts: archpi
-  become: yes
-  become_user: root
-  tasks:
-    - name: REMOVE EXISTING USERS
-      include_tasks: ./tasklists/remove-default-users.yaml

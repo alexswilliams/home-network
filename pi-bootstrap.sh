@@ -9,3 +9,5 @@
 # - Installed python (`pacman -S python`)
 
 ansible-playbook playbooks/pi-bootstrap.yaml
+
+ansible-playbook playbooks/main.yaml
