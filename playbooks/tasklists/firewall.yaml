@@ -37,13 +37,13 @@
       ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type packet-too-big -m limit --limit 240/min
       ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type time-exceeded -m limit --limit 240/min
       ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type parameter-problem -m limit --limit 240/min
-      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type router-advertisement -m hl --hl-eq 255 -d ff02::1 -s fe80::/32
-      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type neighbour-solicitation -m hl --hl-eq 255 -d ff02::/32 -s fe80::/32
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type router-advertisement -m hl --hl-eq 255 -d ff02::1
+      ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type neighbour-solicitation -m hl --hl-eq 255 -d ff02::/32
       ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type neighbour-advertisement -m hl --hl-eq 255 -d fe80::/32 # Only accept advertisments to link local addresses
       ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type echo-request -m limit --limit 240/min -s fe80::/32
       ip6tables -A INPUT -j ACCEPT -p icmpv6 --icmpv6-type echo-reply -m limit --limit 240/min
 
-      # Multicast Name Resolution, because we're not savages
+      # Multicast Name Resolution
       iptables -A INPUT -j ACCEPT -p udp --dport 5353 -s 192.168.1.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
       for hoplimit in 1 255; do
         ip6tables -A INPUT -j ACCEPT -p udp --dport 5353 -d ff02::fb -m hl --hl-eq $hoplimit -m comment --comment "mDNS"
@@ -62,6 +62,9 @@
 
       # RIP
       ip6tables -A INPUT -j ACCEPT -p udp --dport 521 -s fe80::/32 -d ff02::9 -m hl --hl-eq 255 -m comment --comment "RIPng from router"
+
+      # DHCPv6
+      ip6tables -A INPUT -j ACCEPT -p udp --dport 546 --sport 547 -s fe80::1:1/32 -m hl --hl-eq 64 -m comment --comment "DHCPv6 from router"
 
 
       # Custom rules
