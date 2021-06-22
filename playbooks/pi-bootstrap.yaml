@@ -61,6 +61,6 @@
     - name: Reboot
       remote_user: alexw
       reboot:
-        post_reboot_delay: 30
+        post_reboot_delay: 45
         reboot_timeout: 10
       when: ansible_facts['nodename'] is defined

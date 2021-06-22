@@ -6,7 +6,7 @@ archpi:
     #   ansible_user: alexw
     #   ansible_become_method: sudo
       
-    #   hostname_to_set: pi
+    #   hostname_to_set: vesu-pi-us
     #   no_hw_clock: true
     #   no_wifi: true
     #   swap_device: mmcblk0p2
@@ -17,6 +17,5 @@ archpi:
       ansible_user: alexw
       ansible_become_method: sudo
       
-      hostname_to_set: deskpi
+      hostname_to_set: pom-pi
       no_hw_clock: true
-      swap_device: mmcblk0p3
