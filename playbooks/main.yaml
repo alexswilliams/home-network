@@ -29,4 +29,8 @@
       include_tasks: ./tasklists/local-dns.yaml
     - name: TOOLS
       include_tasks: ./tasklists/tools.yaml
+    - name: DOCKER
+      include_tasks: ./tasklists/docker.yaml
+    - name: MONITORING
+      include_tasks: ./tasklists/monitoring.yaml
       

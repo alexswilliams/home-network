@@ -1,8 +1,0 @@
-- name: Docker is uninstalled
-  package:
-    state: absent
-    name:
-      - docker
-      - btrfs-progs
-      - pigz
-      - docker-compose

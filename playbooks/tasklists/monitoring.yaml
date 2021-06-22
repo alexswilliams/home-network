@@ -1,0 +1,30 @@
+- name: Monitoring project directory exists
+  file:
+    state: directory
+    path: /opt/monitoring
+    recurse: yes
+    owner: alexw
+    group: alexw
+    mode: 0775
+
+- name: Monitoring compose project is configured
+  copy:
+    dest: /opt/
+    src: ../files/monitoring
+    group: alexw
+    owner: alexw
+    mode: 0664
+
+- name: SNMP and ethtool are installed
+  package:
+    state: present
+    name:
+      - net-snmp
+      - ethtool
+
+- name: All containers are started
+  docker_compose:
+    project_src: /opt/monitoring
+    state: present
+    restarted: yes
+    remove_orphans: yes

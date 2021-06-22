@@ -2,5 +2,5 @@
   hosts: archpi
   become: yes
   tasks:
-    - name: HOST BASICS
-      include_tasks: ./tasklists/host-basics.yaml
+    - name: ONE OFF
+      include_tasks: ./tasklists/monitoring.yaml
