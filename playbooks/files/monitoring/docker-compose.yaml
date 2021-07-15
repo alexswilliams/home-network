@@ -2,7 +2,7 @@ version: '3.7'
 services:
 
   telegraf:
-    image: telegraf:1.18.3
+    image: telegraf:1.19.1
     restart: always
     read_only: true
     ports:
@@ -16,15 +16,11 @@ services:
 
 
   prometheus:
-    image: prom/prometheus:v2.28.0
+    image: prom/prometheus:v2.28.1
     restart: always
     volumes:
       - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
       - "prometheus-volume:/etc/prometheus/data"
-    # environment:
-    #   # I very much wish this worked - i added a shim on my home-rolled prom images to add env-var-to-arg capability :(
-    #   PROM_STORAGE_TSDB_RETENTION_TIME: "3y"
-    #   PROM_STORAGE_TSDB_RETENTION_SIZE: "16GB"
     command:
       - "--storage.tsdb.retention.time=3y"
       - "--storage.tsdb.retention.size=16GB"
@@ -52,13 +48,6 @@ services:
       - "--collector.filesystem.ignored-mount-points=^/(host/root/)?(dev|proc|sys|run|var/lib/docker/.+)"
       - "--web.listen-address=:9100"
       - "--web.disable-exporter-metrics"
-    # environment:
-    #   NODE_EXP_PATH_PROCFS: "/host/proc"
-    #   NODE_EXP_PATH_ROOTFS: "/host/root"
-    #   NODE_EXP_PATH_SYSFS: "/host/sys"
-    #   NODE_EXP_FILESYSTEM_IGNORED_MOUNT_POINTS: "^/(host/root/)?(dev|proc|sys|run|var/lib/docker/.+)"
-    #   NODE_EXP_WEB_LISTEN_ADDRESS: ":9100"
-    #   NODE_EXP_WEB_DISABLE_EXPORTER_METRICS: "true"
     expose:
       - "9100"
     ports:
