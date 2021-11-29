@@ -75,13 +75,6 @@
     enabled: no
     masked: yes
 
-- name: SystemD ResolveD (DBUS) service is disabled
-  systemd:
-    name: dbus-org.freedesktop.resolve1
-    state: stopped
-    enabled: no
-    masked: yes
-
 - name: Avahi Daemon changes are applied
   service:
     state: restarted

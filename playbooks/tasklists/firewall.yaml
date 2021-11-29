@@ -70,6 +70,8 @@
       # Custom rules
       iptables -A INPUT -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 22 -m comment --comment "SSH"
       ip6tables -A INPUT -j ACCEPT -s fe80::/32 -p tcp --dport 22 -m comment --comment "SSH"
+      iptables -A INPUT -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 9090 -m comment --comment "Prometheus"
+      ip6tables -A INPUT -j ACCEPT -s fe80::/32 -p tcp --dport 9090 -m comment --comment "Prometheus"
 
       
       # Common drops for the sake of log noise
@@ -101,8 +103,8 @@
     content: |
       [Unit]
       Description=IPTable Reload Script
-      After=systemd-networkd.targets
-      Requires=systemd-networkd.targets
+      After=network-pre.target
+      Wants=network-pre.target
 
       [Service]
       Type=oneshot

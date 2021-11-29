@@ -17,6 +17,14 @@
   pip:
     name: docker
 
+- name: Python Compose API is present
+  pip:
+    name: compose
+
+- name: Python Docker Compose API is present
+  pip:
+    name: docker-compose
+
 - name: Prune everything
   docker_prune:
     containers: yes
