@@ -2,7 +2,7 @@ version: '3.7'
 services:
 
   telegraf:
-    image: telegraf:1.19.1
+    image: telegraf:1.20.4
     restart: always
     read_only: true
     ports:
@@ -16,7 +16,7 @@ services:
 
 
   prometheus:
-    image: prom/prometheus:v2.28.1
+    image: prom/prometheus:v2.31.1
     restart: always
     volumes:
       - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
@@ -31,7 +31,7 @@ services:
       - "9090:9090"
 
   prom-node-exporter:
-    image: prom/node-exporter:v1.1.2
+    image: prom/node-exporter:v1.3.1
     restart: always
     user: root
     privileged: true
@@ -45,7 +45,7 @@ services:
       - "--path.procfs=/host/proc"
       - "--path.rootfs=/host/root"
       - "--path.sysfs=/host/sys"
-      - "--collector.filesystem.ignored-mount-points=^/(host/root/)?(dev|proc|sys|run|var/lib/docker/.+)"
+      - "--collector.filesystem.mount-points-exclude=^/(host/root/)?(dev|proc|sys|run|var/lib/docker/.+)"
       - "--web.listen-address=:9100"
       - "--web.disable-exporter-metrics"
     expose:
