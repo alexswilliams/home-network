@@ -119,6 +119,7 @@ ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 9090 -m comment --co
 iptables -A FIREWALL -j DROP -p udp --dport 67 --sport 68 -d 255.255.255.255 -m comment --comment "DHCP broadcasts from other devices"
 iptables -A FIREWALL -j DROP -p udp -m addrtype --dst-type BROADCAST --dport 9999 -m comment --comment "TPLink Kasa discovery protocol"
 iptables -A FIREWALL -j DROP -p udp -m addrtype --dst-type BROADCAST --dport 10101 -m comment --comment "Google Home discovery"
+iptables -A FIREWALL -j DROP -p udp -m addrtype --dst-type BROADCAST --sport 9487 --dport 9478 -m comment --comment "Google Home discovery (2)"
 for cmd in iptables ip6tables; do
     $cmd -A FIREWALL -j DROP -p udp -m multiport --dports 137,138 -m comment --comment "netbios chatter"
     $cmd -A FIREWALL -j DROP -p udp --dport 17500 -m comment --comment "dropbox chatter"
