@@ -2,7 +2,7 @@ archpi:
   hosts:
     # 192.168.1.4:
     #   ansible_connection: ssh
-    #   ansible_python_interpreter: /usr/bin/python3.9
+    #   ansible_python_interpreter: /usr/bin/python3.10
     #   ansible_user: alexw
     #   ansible_become_method: sudo
       
@@ -13,7 +13,7 @@ archpi:
 
     192.168.1.5:
       ansible_connection: ssh
-      ansible_python_interpreter: /usr/bin/python3.9
+      ansible_python_interpreter: /usr/bin/python3.10
       ansible_user: alexw
       ansible_become_method: sudo
       
