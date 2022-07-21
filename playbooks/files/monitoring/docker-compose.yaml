@@ -1,8 +1,8 @@
-version: '3.7'
+version: '3.8'
 services:
 
   telegraf:
-    image: telegraf:1.21.3
+    image: telegraf:1.23.2
     restart: always
     read_only: true
     ports:
@@ -16,7 +16,7 @@ services:
 
 
   prometheus:
-    image: prom/prometheus:v2.33.1
+    image: prom/prometheus:v2.37.0
     restart: always
     volumes:
       - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
