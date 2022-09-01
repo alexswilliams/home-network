@@ -70,14 +70,22 @@
     - net.ipv4.conf.all.log_martians
     - net.ipv4.conf.default.log_martians
 
-- name: Forwarding is disabled
+- name: IPv6 Forwarding is disabled
   sysctl:
     state: present
     name: "{{ item }}"
     value: "0"
     sysctl_set: yes
   with_items:
-    - net.ipv4.conf.all.forwarding
-    - net.ipv4.conf.default.forwarding
     - net.ipv6.conf.all.forwarding
     - net.ipv6.conf.default.forwarding
+
+- name: IPv4 Forwarding is enabled (for docker)
+  sysctl:
+    state: present
+    name: "{{ item }}"
+    value: "1"
+    sysctl_set: yes
+  with_items:
+    - net.ipv4.conf.all.forwarding
+    - net.ipv4.conf.default.forwarding

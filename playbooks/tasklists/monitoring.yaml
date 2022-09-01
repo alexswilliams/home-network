@@ -26,5 +26,4 @@
   docker_compose:
     project_src: /opt/monitoring
     state: present
-    restarted: yes
     remove_orphans: yes

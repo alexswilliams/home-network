@@ -13,6 +13,12 @@
     state: started
     enabled: yes
 
+- name: Local user is in the docker group
+  user:
+    name: alexw
+    groups: docker
+    append: yes
+
 - name: Python Docker API is present
   pip:
     name: docker
