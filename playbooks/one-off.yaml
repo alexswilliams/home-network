@@ -3,4 +3,6 @@
   become: yes
   tasks:
     - name: ONE OFF
+      include_tasks: ./tasklists/docker.yaml
+    - name: ONE OFF 2
       include_tasks: ./tasklists/monitoring.yaml

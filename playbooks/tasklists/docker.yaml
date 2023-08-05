@@ -19,17 +19,31 @@
     groups: docker
     append: yes
 
+- name: Python Docker API is removed
+  package:
+    state: absent
+    name:
+     - python-docker-py
+
 - name: Python Docker API is present
-  pip:
-    name: docker
+  package:
+    state: present
+    name:
+     - python-docker
 
-- name: Python Compose API is present
-  pip:
-    name: compose
+# todo: doesn't work yet - the compose ansible plugin needs the compose package, but pip now hates system packages and this has no pacman package
 
-- name: Python Docker Compose API is present
-  pip:
-    name: docker-compose
+# - name: Python Compose API is present
+#   pip:
+#     state: latest
+#     extra_args: "--break-system-packages"
+#     name: compose
+
+# - name: Python Docker Compose API is present
+#   pip:
+#     state: latest
+#     extra_args: "--break-system-packages"
+#     name: docker-compose
 
 - name: Prune everything
   docker_prune:
