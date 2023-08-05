@@ -1,6 +1,6 @@
 - name: Apply Firewall
   hosts: archpi
-  become: yes
+  become: true
   tasks:
     - name: FIREWALL
       include_tasks: ./tasklists/firewall.yaml

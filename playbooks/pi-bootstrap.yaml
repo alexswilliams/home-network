@@ -1,10 +1,10 @@
 - name: Run a system upgrade and install python
   hosts: archpi
   remote_user: alarm
-  become: yes
+  become: true
   become_method: su
   become_user: root
-  ignore_unreachable: yes
+  ignore_unreachable: true
   gather_facts: false
   serial: 1
   vars:
@@ -18,14 +18,13 @@
       register: python_bootstrap
       changed_when: python_bootstrap.stdout != ""
 
-
 - name: Create local user, add to sudo, secure ssh
   hosts: archpi
   remote_user: alarm
-  become: yes
+  become: true
   become_method: su
   become_user: root
-  ignore_unreachable: yes
+  ignore_unreachable: true
   vars:
     ansible_user: alarm
     ansible_ssh_pass: alarm
@@ -57,7 +56,7 @@
     - name: SSH CONFIGURED
       include_tasks: ./tasklists/ssh.yaml
       when: ansible_facts['nodename'] is defined
-    
+
     - name: Reboot
       remote_user: alexw
       reboot:

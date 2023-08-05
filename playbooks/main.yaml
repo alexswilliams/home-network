@@ -23,8 +23,8 @@
       include_tasks: ./tasklists/host-basics.yaml
     - name: ANSIBLE
       include_tasks: ./tasklists/ansible.yaml
-    - name: SYSCTL RULES
-      include_tasks: ./tasklists/sysctl-rules.yaml
+    - name: SYSCTL
+      include_tasks: ./tasklists/sysctl.yaml
     - name: FIREWALL
       include_tasks: ./tasklists/firewall.yaml
     - name: LOCAL DNS

@@ -26,10 +26,10 @@
       cache-entries-max=2048
       ratelimit-interval-usec=10000
       ratelimit-burst=20
-      
+
       [WIDE-AREA]
       enable-wide-area=no
-      
+
       [PUBLISH]
       disable-publishing=no
       disable-user-service-publishing=no
@@ -41,10 +41,10 @@
       publish-resolv-conf-dns-servers=no
       publish-aaaa-on-ipv4=yes
       publish-a-on-ipv6=no
-      
+
       [REFLECTOR]
       enable-reflector=no
-      
+
       [RLIMITS]
       rlimit-core=0
       rlimit-fsize=0
@@ -66,7 +66,6 @@
           <port>22</port>
         </service>
       </service-group>
-
 
 - name: SystemD ResolveD service is disabled
   systemd:
@@ -132,7 +131,7 @@
     mode: 0644
     content: |
       reload no
-      
+
       # Desirable:
       # Loopback
       precedence ::1/128 100
@@ -142,7 +141,7 @@
       precedence 2001:2::/48 45
       # ANYWHERE ELSE
       precedence ::/0 40
-      
+
       # Undesirable:
       # 6to4
       precedence 2002::/32 20
@@ -168,5 +167,5 @@
     path: /etc/nsswitch.conf
     state: present
     insertbefore: EOF
-    regex: '^hosts: '
+    regex: "^hosts: "
     line: "hosts: myhostname files mdns_minimal [NOTFOUND=return] dns mdns"
