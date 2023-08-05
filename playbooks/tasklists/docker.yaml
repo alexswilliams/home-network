@@ -19,36 +19,15 @@
     groups: docker
     append: yes
 
-- name: Python Docker API is removed
-  package:
-    state: absent
-    name:
-     - python-docker-py
-
-- name: Python Docker API is present
-  package:
-    state: present
-    name:
-     - python-docker
-
-# todo: doesn't work yet - the compose ansible plugin needs the compose package, but pip now hates system packages and this has no pacman package
-
-# - name: Python Compose API is present
-#   pip:
-#     state: latest
-#     extra_args: "--break-system-packages"
-#     name: compose
-
-# - name: Python Docker Compose API is present
-#   pip:
-#     state: latest
-#     extra_args: "--break-system-packages"
-#     name: docker-compose
-
 - name: Prune everything
-  docker_prune:
-    containers: yes
-    images: yes
-    networks: yes
-    volumes: yes
-    builder_cache: yes
+  command:
+    cmd: docker system prune --all --volumes --force
+
+- name: Install Prune Cron
+  cron:
+    cron_file: /etc/cron.d/00_docker
+    user: root
+    name: prune cron
+    minute: "7"
+    hour: "10"
+    job: "docker system prune --all --volumes --force"

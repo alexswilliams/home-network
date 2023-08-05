@@ -23,7 +23,6 @@
       - ethtool
 
 - name: All containers are started
-  docker_compose:
-    project_src: /opt/monitoring
-    state: present
-    remove_orphans: yes
+  command:
+    chdir: /opt/monitoring
+    cmd: docker compose up --build --detach --no-color --pull missing --quiet-pull --remove-orphans

@@ -1,8 +1,14 @@
 - name: One Off
   hosts: archpi
-  become: yes
+  become: true
   tasks:
+    # - name: ONE OFF
+    #   include_tasks: ./tasklists/host-basics.yaml
+    # - name: ONE OFF
+    #   include_tasks: ./tasklists/local-user.yaml
+    - name: ONE OFF
+      include_tasks: ./tasklists/ansible.yaml
     - name: ONE OFF
       include_tasks: ./tasklists/docker.yaml
-    - name: ONE OFF 2
-      include_tasks: ./tasklists/monitoring.yaml
+    # - name: ONE OFF 2
+    #   include_tasks: ./tasklists/monitoring.yaml

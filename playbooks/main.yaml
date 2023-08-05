@@ -1,6 +1,6 @@
 - name: Verify bootstrap
   hosts: archpi
-  become: yes
+  become: true
   tasks:
     - name: PACMAN INITIALISED
       include_tasks: ./tasklists/pacman-init.yaml
@@ -15,12 +15,14 @@
 
 - name: Machine Setup
   hosts: archpi
-  become: yes
+  become: true
   tasks:
     - name: CLEAN_BASE_PACKAGES
       include_tasks: ./tasklists/unneeded-base-packages.yaml
     - name: HOST_BASICS
       include_tasks: ./tasklists/host-basics.yaml
+    - name: ANSIBLE
+      include_tasks: ./tasklists/ansible.yaml
     - name: SYSCTL RULES
       include_tasks: ./tasklists/sysctl-rules.yaml
     - name: FIREWALL
@@ -33,4 +35,3 @@
       include_tasks: ./tasklists/docker.yaml
     - name: MONITORING
       include_tasks: ./tasklists/monitoring.yaml
-      

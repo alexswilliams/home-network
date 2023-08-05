@@ -8,6 +8,11 @@
       - lsof
       - lm_sensors
 
+- name: Cron Daemon is installed
+  package:
+    state: present
+    name: cronie
+
 - name: PIP is installed
   package:
     state: present
