@@ -1,0 +1,203 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "https://alexswilliams.co.uk/schemas/grafana-datasource.json",
+    "description": "JSON Schema for Grafana Datasource Provisioning",
+    "properties": {
+        "datasources": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "type",
+                    "access"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Sets the name you use to refer to the data source in panels and queries."
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Sets the data source type."
+                    },
+                    "access": {
+                        "type": "string",
+                        "enum": [
+                            "proxy",
+                            "direct"
+                        ],
+                        "description": "Sets the access mode, either proxy or direct (Server or Browser in the UI).  Some data sources are incompatible with any setting but proxy (Server)."
+                    },
+                    "orgId": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "default": 1,
+                        "description": "Sets the organization id. Defaults to orgId 1."
+                    },
+                    "uid": {
+                        "type": "string",
+                        "description": "Sets a custom UID to reference this data source in other parts of the configuration. If not specified, Grafana generates one."
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "Sets the data source's URL, including the port."
+                    },
+                    "user": {
+                        "type": "string",
+                        "description": "Sets the database user, if necessary."
+                    },
+                    "database": {
+                        "type": "string",
+                        "description": "Sets the database name, if necessary."
+                    },
+                    "basicAuth": {
+                        "type": "boolean",
+                        "description": "Enables basic authorization."
+                    },
+                    "basicAuthUser": {
+                        "type": "string",
+                        "description": "Sets the basic authorization username."
+                    },
+                    "withCredentials": {
+                        "type": "boolean",
+                        "description": "Enables credential headers."
+                    },
+                    "isDefault": {
+                        "type": "boolean",
+                        "description": " Toggles whether the data source is pre-selected for new panels. You can set only one default data source per organization."
+                    },
+                    "jsonData": {
+                        "description": "Fields to convert to JSON and store in jsonData.",
+                        "oneOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "timeInterval": {
+                                        "type": "string",
+                                        "description": "Lowest interval/step value that should be used for this data source.",
+                                        "examples": [
+                                            "10s"
+                                        ]
+                                    },
+                                    "httpMethod": {
+                                        "type": "string",
+                                        "description": "HTTP Method. 'GET', 'POST', defaults to POST",
+                                        "default": "POST",
+                                        "enum": [
+                                            "GET",
+                                            "POST"
+                                        ]
+                                    },
+                                    "customQueryParameters": {
+                                        "type": "string",
+                                        "description": "Query parameters to add, as a URL-encoded string."
+                                    },
+                                    "manageAlerts": {
+                                        "type": "boolean",
+                                        "description": "Manage alerts via Alerting UI"
+                                    },
+                                    "alertmanagerUid": {
+                                        "type": "string",
+                                        "description": "UID of Alert Manager that manages Alert for this data source."
+                                    },
+                                    "sigV4Auth": {
+                                        "type": "boolean",
+                                        "description": "Enable usage of SigV4"
+                                    },
+                                    "sigV4AuthType": {
+                                        "type": "string",
+                                        "description": "SigV4 auth provider. default/credentials/keys",
+                                        "enum": [
+                                            "default",
+                                            "credentials",
+                                            "keys"
+                                        ]
+                                    },
+                                    "sigV4ExternalId": {
+                                        "type": "string",
+                                        "description": "Optional SigV4 External ID"
+                                    },
+                                    "sigV4AssumeRoleArn": {
+                                        "type": "string",
+                                        "description": "Optional SigV4 ARN role to assume"
+                                    },
+                                    "sigV4Region": {
+                                        "type": "string",
+                                        "description": "SigV4 AWS region"
+                                    },
+                                    "sigV4Profile": {
+                                        "type": "string",
+                                        "description": "Optional SigV4 credentials profile"
+                                    },
+                                    "prometheusVersion": {
+                                        "type": "string",
+                                        "description": "The version of the Prometheus data source, such as 2.37.0, 2.24.0",
+                                        "examples": [
+                                            "2.37.0",
+                                            "2.24.0"
+                                        ]
+                                    },
+                                    "prometheusType": {
+                                        "type": "string",
+                                        "description": "The type of the Prometheus data sources. such as Prometheus, Cortex, Thanos, Mimir",
+                                        "examples": [
+                                            "Prometheus",
+                                            "Cortex",
+                                            "Thanos",
+                                            "Mimir"
+                                        ]
+                                    },
+                                    "cacheLevel": {
+                                        "type": "string",
+                                        "description": "This determines the duration of the browser cache. Valid values include: Low, Medium, High, and None. This field is configurable when you enable the prometheusResourceBrowserCache feature flag.",
+                                        "enum": [
+                                            "Low",
+                                            "Medium",
+                                            "High",
+                                            "None"
+                                        ]
+                                    },
+                                    "incrementalQuerying": {
+                                        "type": "string",
+                                        "description": "Experimental: Turn on incremental querying to enhance dashboard reload performance with slow data sources"
+                                    },
+                                    "incrementalQueryOverlapWindow": {
+                                        "type": "string",
+                                        "description": "Experimental: Configure incremental query overlap window. Requires a valid duration string, i.e. 180s or 15m Default value is 10m (10 minutes).",
+                                        "default": "10m"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "secureJsonData": {
+                        "description": "Fields to encrypt before storing in jsonData.",
+                        "oneOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "sigV4AccessKey": {
+                                        "type": "string",
+                                        "description": "SigV4 access key. Required when using keys auth provider"
+                                    },
+                                    "sigV4SecretKey": {
+                                        "type": "string",
+                                        "description": "SigV4 secret key. Required when using keys auth provider"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "version": {
+                        "type": "integer"
+                    },
+                    "editable": {
+                        "type": "boolean",
+                        "description": "Allows users to edit data sources from the Grafana UI."
+                    }
+                }
+            }
+        }
+    }
+}

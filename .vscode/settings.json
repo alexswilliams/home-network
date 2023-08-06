@@ -1,0 +1,6 @@
+{
+    "redhat.telemetry.enabled": false,
+    "yaml.schemas": {
+        "./playbooks/files/schemata/grafana-datasource.json": "*/grafana-datasources/*.yaml"
+    }
+}
