@@ -15,7 +15,7 @@ services:
       - "9981:9981"
 
   telegraf:
-    image: telegraf:1.23.4
+    image: telegraf:1.27.3
     restart: always
     read_only: true
     ports:
@@ -28,7 +28,7 @@ services:
       - "/usr/share/snmp/mibs:/usr/share/snmp/mibs"
 
   prometheus:
-    image: prom/prometheus:v2.38.0
+    image: prom/prometheus:v2.46.0
     restart: always
     volumes:
       - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
@@ -43,7 +43,7 @@ services:
       - "9090:9090"
 
   grafana:
-    image: grafana/grafana:9.1.2
+    image: grafana/grafana:10.0.3
     restart: always
     volumes:
       - "./config/grafana/grafana.ini:/etc/grafana/grafana.ini"
@@ -55,7 +55,7 @@ services:
       - "3000:3000"
 
   prom-node-exporter:
-    image: prom/node-exporter:v1.3.1
+    image: prom/node-exporter:v1.6.1
     restart: always
     user: root
     privileged: true
