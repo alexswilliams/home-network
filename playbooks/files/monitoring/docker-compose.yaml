@@ -2,7 +2,7 @@ version: '3.8'
 services:
 
   iot-monitor:
-    image: alexswilliams/homepower:master--2022-10-09-16-35--e03a40a
+    image: alexswilliams/homepower:master--2023-12-05-01-57--048c481
     volumes:
       - "./config/homepower/devices.yaml:/etc/homepower/devices.yaml"
       - "./config/homepower/credentials.yaml:/etc/homepower/credentials.yaml"
