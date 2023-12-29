@@ -14,6 +14,12 @@ services:
     ports:
       - "9981:9981"
 
+  govee-monitor:
+    image: alexswilliams/govee-test:latest
+    restart: always
+    read_only: true
+    network_mode: host # exposes port 8080
+
   telegraf:
     image: telegraf:1.28.5
     restart: always

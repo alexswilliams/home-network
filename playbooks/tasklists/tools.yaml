@@ -3,3 +3,5 @@
     state: present
     name:
       - tcpdump
+      - bluez-utils
+      - git

@@ -1,4 +1,4 @@
-- name: Wifi and bluetooth removed
+- name: Wifi removed
   package:
     state: absent
     name:

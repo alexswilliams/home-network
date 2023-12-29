@@ -9,6 +9,6 @@
     # - name: ONE OFF
     #   include_tasks: ./tasklists/ansible.yaml
     # - name: ONE OFF
-    #   include_tasks: ./tasklists/docker.yaml
+    #   include_tasks: ./tasklists/bluetooth.yaml
     - name: ONE OFF 2
       include_tasks: ./tasklists/monitoring.yaml

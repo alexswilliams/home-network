@@ -114,6 +114,8 @@ iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 22 -m comment --
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 22 -m comment --comment "SSH"
 iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 9090 -m comment --comment "Prometheus"
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 9090 -m comment --comment "Prometheus"
+# Docker-to-docker networking for accessing containers mapped to the host network
+iptables -A FIREWALL -j ACCEPT -s 172.18.0.0/24 -d 172.18.0.1 -p tcp --dport 8080 -m comment --comment "Govee metrics page"
 
 # Common drops for the sake of log noise
 iptables -A FIREWALL -j DROP -p udp --dport 67 --sport 68 -d 255.255.255.255 -m comment --comment "DHCP broadcasts from other devices"

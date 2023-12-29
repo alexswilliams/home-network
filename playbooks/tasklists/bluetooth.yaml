@@ -1,0 +1,11 @@
+- name: Useful Tools are installed
+  package:
+    state: present
+    name:
+      - bluez
+
+- name: Bluetooth Daemon started
+  service:
+    name: bluetooth
+    state: started
+    enabled: yes
