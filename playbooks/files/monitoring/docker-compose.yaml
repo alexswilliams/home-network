@@ -15,9 +15,13 @@ services:
       - "9981:9981"
 
   govee-monitor:
-    image: alexswilliams/govee-test:latest
+    image: alexswilliams/govee-prometheus:master--2023-12-30-18-29--38fe866
     restart: always
     read_only: true
+    volumes:
+      - "./config/govee/devices.csv:/etc/govee/devices.csv"
+    environment:
+      - "BT_ALIASES=/etc/govee/devices.csv"
     network_mode: host # exposes port 8080
 
   telegraf:
