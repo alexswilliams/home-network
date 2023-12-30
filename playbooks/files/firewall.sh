@@ -114,6 +114,9 @@ iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 22 -m comment --
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 22 -m comment --comment "SSH"
 iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 9090 -m comment --comment "Prometheus"
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 9090 -m comment --comment "Prometheus"
+iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 3000 -m comment --comment "Grafana"
+ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 3000 -m comment --comment "Grafana"
+
 # Docker-to-docker networking for accessing containers mapped to the host network
 iptables -A FIREWALL -j ACCEPT -s 172.18.0.0/24 -d 172.18.0.1 -p tcp --dport 8080 -m comment --comment "Govee metrics page"
 
@@ -125,6 +128,7 @@ iptables -A FIREWALL -j DROP -p udp -m addrtype --dst-type BROADCAST --sport 948
 for cmd in iptables ip6tables; do
     $cmd -A FIREWALL -j DROP -p udp -m multiport --dports 137,138 -m comment --comment "netbios chatter"
     $cmd -A FIREWALL -j DROP -p udp --dport 17500 -m comment --comment "dropbox chatter"
+    $cmd -A FIREWALL -j DROP -p udp --dport 57621 -m comment --comment "spotify chatter"
 done
 
 iptables -A FIREWALL -j LOGDROP

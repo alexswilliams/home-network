@@ -15,13 +15,17 @@ services:
       - "9981:9981"
 
   govee-monitor:
-    image: alexswilliams/govee-prometheus:master--2023-12-30-18-29--38fe866
+    image: alexswilliams/govee-prometheus:master--2023-12-30-21-50--9fcbe9d
     restart: always
     read_only: true
     volumes:
       - "./config/govee/devices.csv:/etc/govee/devices.csv"
     environment:
-      - "BT_ALIASES=/etc/govee/devices.csv"
+      - "BT_ALIASES_FILE_PATH=/etc/govee/devices.csv"
+      # - "BLE_SCAN_INTERVAL=53"
+      # - "BLE_SCAN_WINDOW=17"
+      - "BLE_IGNORE_DUPLICATES=false"
+      - "VERBOSE=false"
     network_mode: host # exposes port 8080
 
   telegraf:
