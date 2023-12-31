@@ -15,7 +15,7 @@ services:
       - "9981:9981"
 
   govee-monitor:
-    image: alexswilliams/govee-prometheus:master--2023-12-30-21-50--9fcbe9d
+    image: alexswilliams/govee-prometheus:master--2023-12-31-04-24--7ca1851
     restart: always
     read_only: true
     volumes:
