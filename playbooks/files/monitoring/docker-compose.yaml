@@ -29,7 +29,7 @@ services:
     network_mode: host # exposes port 8080
 
   telegraf:
-    image: telegraf:1.28.5
+    image: telegraf:1.29.1
     restart: always
     read_only: true
     ports:
@@ -42,7 +42,7 @@ services:
       - "/usr/share/snmp/mibs:/usr/share/snmp/mibs"
 
   prometheus:
-    image: prom/prometheus:v2.48.0
+    image: prom/prometheus:v2.48.1
     restart: always
     volumes:
       - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
@@ -57,7 +57,7 @@ services:
       - "9090:9090"
 
   grafana:
-    image: grafana/grafana:10.2.2
+    image: grafana/grafana:10.2.3
     restart: always
     volumes:
       - "./config/grafana/grafana.ini:/etc/grafana/grafana.ini"
