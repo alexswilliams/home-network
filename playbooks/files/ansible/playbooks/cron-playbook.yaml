@@ -3,8 +3,8 @@
   become: true
   tasks:
     - name: Alexw has SSH public keys from github
-      authorized_key:
+      ansible.posix.authorized_key:
         user: alexw
         state: present
         key: https://github.com/alexswilliams.keys
-        exclusive: yes
+        exclusive: true

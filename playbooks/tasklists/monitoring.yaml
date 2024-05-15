@@ -26,3 +26,4 @@
   ansible.builtin.command:
     chdir: /opt/monitoring
     cmd: docker compose up --build --detach --no-color --pull missing --quiet-pull --remove-orphans
+  changed_when: true

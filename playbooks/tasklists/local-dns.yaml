@@ -1,4 +1,4 @@
-- name: mDNS packages are installed
+- name: MDNS packages are installed
   ansible.builtin.package:
     state: present
     name:

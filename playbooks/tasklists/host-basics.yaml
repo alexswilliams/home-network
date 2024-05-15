@@ -70,7 +70,7 @@
   when: no_hw_clock is defined
 
 - name: Generate GB locale
-  ansible.builtin.locale_gen:
+  community.general.locale_gen:
     name: en_GB.UTF-8
     state: present
 

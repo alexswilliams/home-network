@@ -1,7 +1,7 @@
 - name: Firewall script is configured
   register: firewall_script
   ansible.builtin.copy:
-    src: ../files/firewall.sh
+    src: files/firewall.sh
     dest: /usr/local/bin/firewall.sh
     owner: root
     group: root

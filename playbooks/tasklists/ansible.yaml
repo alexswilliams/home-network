@@ -15,7 +15,7 @@
 - name: Ansible local task lists are present
   ansible.builtin.copy:
     dest: /opt/
-    src: ../files/ansible
+    src: files/ansible
     group: root
     owner: root
     mode: "0664"

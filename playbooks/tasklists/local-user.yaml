@@ -70,7 +70,7 @@
 - name: Alexw toprc is configured
   ansible.builtin.copy:
     dest: /home/alexw/.config/procps/toprc
-    src: ../files/toprc
+    src: files/toprc
     group: alexw
     owner: alexw
     mode: "0644"

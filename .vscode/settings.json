@@ -5,6 +5,8 @@
   },
   "ansible.python.interpreterPath": "/bin/python3",
   "files.associations": {
-    "*.yaml": "ansible"
+    "**/playbooks/*.yaml": "ansible",
+    "**/playbooks/tasklists/*.yaml": "ansible",
+    
   }
 }

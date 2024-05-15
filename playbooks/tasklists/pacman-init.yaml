@@ -8,3 +8,4 @@
   ansible.builtin.command:
     cmd: pacman-key --populate archlinuxarm
   when: pacman_keyring_initialised.changed
+  changed_when: true
