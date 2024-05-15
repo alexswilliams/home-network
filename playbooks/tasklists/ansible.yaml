@@ -1,27 +1,27 @@
 - name: Install ansible
-  package:
+  ansible.builtin.package:
     state: present
     name: ansible
 
 - name: Ansible project directory exists
-  file:
+  ansible.builtin.file:
     state: directory
     path: /opt/ansible
-    recurse: yes
+    recurse: true
     owner: root
     group: root
-    mode: 0775
+    mode: "0775"
 
 - name: Ansible local task lists are present
-  copy:
+  ansible.builtin.copy:
     dest: /opt/
     src: ../files/ansible
     group: root
     owner: root
-    mode: 0664
+    mode: "0664"
 
 - name: Install Ansible Cron (LANG)
-  cron:
+  ansible.builtin.cron:
     cron_file: /etc/cron.d/00_ansible
     user: alexw
     env: true
@@ -29,7 +29,7 @@
     job: en_GB.UTF-8
 
 - name: Install Ansible Cron (LC_CTYPE)
-  cron:
+  ansible.builtin.cron:
     cron_file: /etc/cron.d/00_ansible
     user: alexw
     env: true
@@ -38,7 +38,7 @@
     insertafter: LANG
 
 - name: Install Ansible Cron
-  cron:
+  ansible.builtin.cron:
     cron_file: /etc/cron.d/00_ansible
     user: alexw
     name: cron playbook

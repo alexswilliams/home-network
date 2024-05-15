@@ -2,7 +2,7 @@
   hosts: archpi
   remote_user: alarm
   become: true
-  become_method: su
+  become_method: ansible.builtin.su
   become_user: root
   ignore_unreachable: true
   gather_facts: false
@@ -12,9 +12,14 @@
     ansible_ssh_pass: alarm
     ansible_become_pass: root
     ansible_become_method: su
-    ansible_host_key_checking: no
+    ansible_host_key_checking: false
   tasks:
-    - raw: bash -c "test -e /usr/bin/python || (pacman-key --init && pacman-key --populate archlinuxarm && pacman -Syu --noconfirm && pacman -S python --noconfirm)"
+    - name: Init Keyring
+      ansible.builtin.raw: |
+        bash -c "test -e /usr/bin/python || ( \
+          pacman-key --init && pacman-key --populate archlinuxarm \
+          && pacman -Syu --noconfirm && pacman -S python --noconfirm \
+        )"
       register: python_bootstrap
       changed_when: python_bootstrap.stdout != ""
 
@@ -22,7 +27,7 @@
   hosts: archpi
   remote_user: alarm
   become: true
-  become_method: su
+  become_method: ansible.builtin.su
   become_user: root
   ignore_unreachable: true
   vars:
@@ -30,18 +35,18 @@
     ansible_ssh_pass: alarm
     ansible_become_pass: root
     ansible_become_method: su
-    ansible_host_key_checking: no
+    ansible_host_key_checking: false
   tasks:
     - name: PACMAN INITIALISED
-      include_tasks: ./tasklists/pacman-init.yaml
+      ansible.builtin.include_tasks: ./tasklists/pacman-init.yaml
       when: ansible_facts['nodename'] is defined
 
     - name: LOCAL USER CREATED
-      include_tasks: ./tasklists/local-user.yaml
+      ansible.builtin.include_tasks: ./tasklists/local-user.yaml
       when: ansible_facts['nodename'] is defined
 
     - name: Remove previous hard-coded host key
-      file:
+      ansible.builtin.file:
         state: absent
         path: "{{ item }}"
       with_items:
@@ -50,16 +55,16 @@
       when: ansible_facts['nodename'] is defined
 
     - name: SUDO CONFIGURED
-      include_tasks: ./tasklists/sudo.yaml
+      ansible.builtin.include_tasks: ./tasklists/sudo.yaml
       when: ansible_facts['nodename'] is defined
 
     - name: SSH CONFIGURED
-      include_tasks: ./tasklists/ssh.yaml
+      ansible.builtin.include_tasks: ./tasklists/ssh.yaml
       when: ansible_facts['nodename'] is defined
 
     - name: Reboot
       remote_user: alexw
-      reboot:
+      ansible.builtin.reboot:
         post_reboot_delay: 45
         reboot_timeout: 10
       when: ansible_facts['nodename'] is defined

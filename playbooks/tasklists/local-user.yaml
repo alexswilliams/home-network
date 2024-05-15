@@ -1,32 +1,32 @@
 - name: Alexw user exists
-  user:
+  ansible.builtin.user:
     state: present
     name: alexw
-    create_home: yes
+    create_home: true
     home: /home/alexw
     shell: /bin/bash
 
 - name: Alexw's SSH folder exists
-  file:
+  ansible.builtin.file:
     state: directory
     path: /home/alexw/.ssh
     owner: alexw
     group: alexw
-    mode: 0700
+    mode: "0700"
 
 - name: Alexw has SSH public keys from github
-  authorized_key:
+  ansible.posix.authorized_key:
     user: alexw
     state: present
     key: https://github.com/alexswilliams.keys
-    exclusive: yes
+    exclusive: true
 
 - name: Alexw bashrc is configured
-  copy:
+  ansible.builtin.copy:
     dest: /home/alexw/.bashrc
     group: alexw
     owner: alexw
-    mode: 0644
+    mode: "0644"
     content: |
       export EDITOR=nano
       export PAGER=less
@@ -38,20 +38,20 @@
     validate: "/bin/bash %s"
 
 - name: SSH ControlMasters directory exists
-  file:
+  ansible.builtin.file:
     state: directory
     path: /home/alexw/.ssh/controlmasters
-    recurse: yes
+    recurse: true
     owner: alexw
     group: alexw
-    mode: 0770
+    mode: "0770"
 
 - name: Alexw ssh config is configured
-  copy:
+  ansible.builtin.copy:
     dest: /home/alexw/.ssh/config
     group: alexw
     owner: alexw
-    mode: 0664
+    mode: "0664"
     content: |
       Host *
         ControlPath ~/.ssh/controlmasters/%r@%h:%p
@@ -59,18 +59,18 @@
         ControlPersist 2m
 
 - name: ProcPS Config directory exists
-  file:
+  ansible.builtin.file:
     state: directory
     path: /home/alexw/.config/procps
-    recurse: yes
+    recurse: true
     owner: alexw
     group: alexw
-    mode: 0770
+    mode: "0770"
 
 - name: Alexw toprc is configured
-  copy:
+  ansible.builtin.copy:
     dest: /home/alexw/.config/procps/toprc
     src: ../files/toprc
     group: alexw
     owner: alexw
-    mode: 0644
+    mode: "0644"

@@ -1,14 +1,14 @@
 - name: Sudo is installed
-  package:
+  ansible.builtin.package:
     state: present
     name: sudo
 
 - name: Sudoers is set up
-  copy:
+  ansible.builtin.copy:
     dest: /etc/sudoers
     group: root
     owner: root
-    mode: 0440
+    mode: "0440"
     content: |
       Defaults env_keep += "EDITOR PAGER LANG LANGUAGE LC_*"
       root  ALL=(ALL) ALL
@@ -16,14 +16,13 @@
     validate: "/usr/sbin/visudo -cf %s"
 
 - name: Remove sudoers directory
-  file:
+  ansible.builtin.file:
     state: absent
     path: /etc/sudoers.d
 
 - name: TEST Root and alexw can both sudo successfully
-  shell: "sudo -u alexw echo test && sudo -u alexw sudo echo test"
-  args:
-    warn: no
+  ansible.builtin.shell:
+    cmd: "sudo -u alexw echo test && sudo -u alexw sudo echo test"
   register: sudo_works
   changed_when: false
   failed_when: sudo_works.rc != 0

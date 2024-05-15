@@ -1,5 +1,5 @@
 - name: Useful Tools are installed
-  package:
+  ansible.builtin.package:
     state: present
     name:
       - tcpdump

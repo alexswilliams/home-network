@@ -1,5 +1,5 @@
 - name: Docker is installed
-  package:
+  ansible.builtin.package:
     state: present
     name:
       - docker
@@ -8,23 +8,23 @@
       - docker-compose
 
 - name: Docker Daemon started
-  service:
+  ansible.builtin.service:
     name: docker
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Local user is in the docker group
-  user:
+  ansible.builtin.user:
     name: alexw
     groups: docker
-    append: yes
+    append: true
 
 - name: Prune everything
-  command:
+  ansible.builtin.command:
     cmd: docker system prune --all --volumes --force
 
 - name: Install Prune Cron
-  cron:
+  ansible.builtin.cron:
     cron_file: /etc/cron.d/00_docker
     user: root
     name: prune cron

@@ -1,9 +1,10 @@
 - name: Pacman keyring initialised
-  shell: pacman-key --init
-  args:
+  ansible.builtin.command:
+    cmd: pacman-key --init
     creates: /etc/pacman.d/gnupg
   register: pacman_keyring_initialised
 
 - name: Pacman keyring populated with archlinuxarm
-  shell: pacman-key --populate archlinuxarm
+  ansible.builtin.command:
+    cmd: pacman-key --populate archlinuxarm
   when: pacman_keyring_initialised.changed

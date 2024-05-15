@@ -1,20 +1,20 @@
 - name: Non-specific ICMP echos are ignored
-  sysctl:
+  ansible.posix.sysctl:
     state: present
     name: "{{ item }}"
     value: "1"
-    sysctl_set: yes
+    sysctl_set: true
   with_items:
     - net.ipv4.icmp_echo_ignore_broadcasts
     - net.ipv6.icmp.echo_ignore_anycast
     - net.ipv6.icmp.echo_ignore_multicast
 
 - name: ICMP redirects are not accepted
-  sysctl:
+  ansible.posix.sysctl:
     state: present
     name: "{{ item }}"
     value: "0"
-    sysctl_set: yes
+    sysctl_set: true
   with_items:
     - net.ipv4.conf.all.accept_redirects
     - net.ipv4.conf.default.accept_redirects
@@ -22,21 +22,21 @@
     - net.ipv6.conf.default.accept_redirects
 
 - name: ICMP redirects are not sent
-  sysctl:
+  ansible.posix.sysctl:
     state: present
     name: "{{ item }}"
     value: "0"
-    sysctl_set: yes
+    sysctl_set: true
   with_items:
     - net.ipv4.conf.all.send_redirects
     - net.ipv4.conf.default.send_redirects
 
 - name: Source routes are not accepted
-  sysctl:
+  ansible.posix.sysctl:
     state: present
     name: "{{ item }}"
     value: "0"
-    sysctl_set: yes
+    sysctl_set: true
   with_items:
     - net.ipv4.conf.all.accept_source_route
     - net.ipv4.conf.default.accept_source_route
@@ -44,48 +44,48 @@
     - net.ipv6.conf.default.accept_source_route
 
 - name: TCP SYN cookies are enabled
-  sysctl:
+  ansible.posix.sysctl:
     state: present
     name: net.ipv4.tcp_syncookies
     value: "1"
-    sysctl_set: yes
+    sysctl_set: true
 
 - name: Reverse-path filtering is enabled
-  sysctl:
+  ansible.posix.sysctl:
     state: present
     name: "{{ item }}"
     value: "1"
-    sysctl_set: yes
+    sysctl_set: true
   with_items:
     - net.ipv4.conf.all.rp_filter
     - net.ipv4.conf.default.rp_filter
 
 - name: Packets with impossible addresses are dropped
-  sysctl:
+  ansible.posix.sysctl:
     state: present
     name: "{{ item }}"
     value: "1"
-    sysctl_set: yes
+    sysctl_set: true
   with_items:
     - net.ipv4.conf.all.log_martians
     - net.ipv4.conf.default.log_martians
 
 - name: IPv6 Forwarding is disabled
-  sysctl:
+  ansible.posix.sysctl:
     state: present
     name: "{{ item }}"
     value: "0"
-    sysctl_set: yes
+    sysctl_set: true
   with_items:
     - net.ipv6.conf.all.forwarding
     - net.ipv6.conf.default.forwarding
 
 - name: IPv4 Forwarding is enabled (for docker)
-  sysctl:
+  ansible.posix.sysctl:
     state: present
     name: "{{ item }}"
     value: "1"
-    sysctl_set: yes
+    sysctl_set: true
   with_items:
     - net.ipv4.conf.all.forwarding
     - net.ipv4.conf.default.forwarding

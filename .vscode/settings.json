@@ -3,5 +3,8 @@
   "yaml.schemas": {
     "./playbooks/files/schemata/grafana-datasource.json": "*/grafana-datasources/*.yaml"
   },
-  "ansible.python.interpreterPath": "/bin/python3"
+  "ansible.python.interpreterPath": "/bin/python3",
+  "files.associations": {
+    "*.yaml": "ansible"
+  }
 }

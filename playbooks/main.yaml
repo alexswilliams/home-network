@@ -3,37 +3,37 @@
   become: true
   tasks:
     - name: PACMAN INITIALISED
-      include_tasks: ./tasklists/pacman-init.yaml
+      ansible.builtin.include_tasks: ./tasklists/pacman-init.yaml
     - name: CREATE LOCAL USER
-      include_tasks: ./tasklists/local-user.yaml
+      ansible.builtin.include_tasks: ./tasklists/local-user.yaml
     - name: SUDO CONFIGURED
-      include_tasks: ./tasklists/sudo.yaml
+      ansible.builtin.include_tasks: ./tasklists/sudo.yaml
     - name: SSH CONFIGURED
-      include_tasks: ./tasklists/ssh.yaml
+      ansible.builtin.include_tasks: ./tasklists/ssh.yaml
     - name: REMOVE DEFAULT USERS
-      include_tasks: ./tasklists/remove-default-users.yaml
+      ansible.builtin.include_tasks: ./tasklists/remove-default-users.yaml
 
 - name: Machine Setup
   hosts: archpi
   become: true
   tasks:
     - name: CLEAN_BASE_PACKAGES
-      include_tasks: ./tasklists/unneeded-base-packages.yaml
+      ansible.builtin.include_tasks: ./tasklists/unneeded-base-packages.yaml
     - name: HOST_BASICS
-      include_tasks: ./tasklists/host-basics.yaml
+      ansible.builtin.include_tasks: ./tasklists/host-basics.yaml
     - name: ANSIBLE
-      include_tasks: ./tasklists/ansible.yaml
+      ansible.builtin.include_tasks: ./tasklists/ansible.yaml
     - name: SYSCTL
-      include_tasks: ./tasklists/sysctl.yaml
+      ansible.builtin.include_tasks: ./tasklists/sysctl.yaml
     - name: FIREWALL
-      include_tasks: ./tasklists/firewall.yaml
+      ansible.builtin.include_tasks: ./tasklists/firewall.yaml
     - name: LOCAL DNS
-      include_tasks: ./tasklists/local-dns.yaml
+      ansible.builtin.include_tasks: ./tasklists/local-dns.yaml
     - name: TOOLS
-      include_tasks: ./tasklists/tools.yaml
+      ansible.builtin.include_tasks: ./tasklists/tools.yaml
     - name: DOCKER
-      include_tasks: ./tasklists/docker.yaml
+      ansible.builtin.include_tasks: ./tasklists/docker.yaml
     - name: BLUETOOTH
-      included_tasks: ./tasklists/bluetooth.yaml
+      ansible.builtin.include_tasks: ./tasklists/bluetooth.yaml
     - name: MONITORING
-      include_tasks: ./tasklists/monitoring.yaml
+      ansible.builtin.include_tasks: ./tasklists/monitoring.yaml

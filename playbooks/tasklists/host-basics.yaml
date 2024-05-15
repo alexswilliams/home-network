@@ -1,5 +1,5 @@
 - name: Base system minimal tools are installed
-  package:
+  ansible.builtin.package:
     state: present
     name:
       - nano
@@ -9,18 +9,18 @@
       - lm_sensors
 
 - name: Cron Daemon is installed
-  package:
+  ansible.builtin.package:
     state: present
     name: cronie
 
 - name: PIP is installed
-  package:
+  ansible.builtin.package:
     state: present
     name:
       - python-pip
 
 - name: No MotD
-  pamd:
+  ansible.builtin.pamd:
     state: absent
     name: system-login
     type: session
@@ -28,21 +28,21 @@
     module_path: pam_motd.so
 
 - name: Set hostname
-  hostname:
+  ansible.builtin.hostname:
     name: "{{ hostname_to_set }}"
   when: hostname_to_set is defined
 
 - name: Set timezone to London
-  timezone:
+  ansible.builtin.timezone:
     name: Europe/London
 
 - name: Configure systemd timesyncd
   register: timesyncd_config
-  copy:
+  ansible.builtin.copy:
     dest: /etc/systemd/timesyncd.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     content: |
       [Time]
       NTP=uk.pool.ntp.org
@@ -51,36 +51,36 @@
       PollIntervalMaxSec=86400
 
 - name: Apply timesyncd changes
-  service:
+  ansible.builtin.service:
     name: systemd-timesyncd
     state: restarted
   when: timesyncd_config.changed
 
 - name: Use fake hw clock if needed
-  package:
+  ansible.builtin.package:
     name: fake-hwclock
     state: present
   when: no_hw_clock is defined
 
 - name: Enable fake-hwclock service
-  service:
+  ansible.builtin.service:
     name: fake-hwclock
     state: started
-    enabled: yes
+    enabled: true
   when: no_hw_clock is defined
 
 - name: Generate GB locale
-  locale_gen:
+  ansible.builtin.locale_gen:
     name: en_GB.UTF-8
     state: present
 
 - name: Configure systemd journald
   register: journald_config
-  copy:
+  ansible.builtin.copy:
     dest: /etc/systemd/journald.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     content: |
       [Journal]
       Storage=volatile
@@ -98,12 +98,12 @@
       Audit=no
 
 - name: Apply systemd journald config
-  service:
+  ansible.builtin.service:
     name: systemd-journald
     state: restarted
   when: journald_config.changed
 
 - name: Old Journald Folder does not exist
-  file:
+  ansible.builtin.file:
     path: /var/log/journal
     state: absent

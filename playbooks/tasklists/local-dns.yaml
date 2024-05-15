@@ -1,5 +1,5 @@
 - name: mDNS packages are installed
-  package:
+  ansible.builtin.package:
     state: present
     name:
       - avahi
@@ -7,11 +7,11 @@
 
 - name: Avahi configured
   register: avahi_daemon_config
-  copy:
+  ansible.builtin.copy:
     dest: /etc/avahi/avahi-daemon.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     content: |
       [SERVER]
       domain-name=local
@@ -53,11 +53,11 @@
 
 - name: SSH Service Published on mDNS
   register: ssh_mdns_service
-  copy:
+  ansible.builtin.copy:
     dest: /etc/avahi/services/ssh.service
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     content: |
       <service-group>
         <name replace-wildcards="yes">%h</name>
@@ -68,44 +68,44 @@
       </service-group>
 
 - name: SystemD ResolveD service is disabled
-  systemd:
+  ansible.builtin.systemd:
     name: systemd-resolved
     state: stopped
-    enabled: no
-    masked: yes
+    enabled: false
+    masked: true
 
 - name: Avahi Daemon changes are applied
-  service:
+  ansible.builtin.service:
     state: restarted
-    enabled: yes
+    enabled: true
     name: avahi-daemon
   when: avahi_daemon_config.changed or ssh_mdns_service.changed
 
 - name: mDNS Config Set
-  copy:
+  ansible.builtin.copy:
     dest: /etc/mdns.allow
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     content: |
       .local.
       .local
 
 - name: Hosts File Set
-  copy:
+  ansible.builtin.copy:
     dest: /etc/hosts
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     content: |
       # No static entries
 
 - name: Resolv Conf Set
-  copy:
+  ansible.builtin.copy:
     dest: /etc/resolv.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     content: |
       # nameserver 2606:4700:4700::1001
       # nameserver 2001:4860:4860::8844
@@ -124,11 +124,11 @@
       options edns0
 
 - name: GAI Config Set
-  copy:
+  ansible.builtin.copy:
     dest: /etc/gai.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     content: |
       reload no
 
@@ -163,7 +163,7 @@
       precedence fec0::/10 2
 
 - name: NSSwitch Hosts Entry Configured
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/nsswitch.conf
     state: present
     insertbefore: EOF

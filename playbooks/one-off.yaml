@@ -3,12 +3,12 @@
   become: true
   tasks:
     # - name: ONE OFF
-    #   include_tasks: ./tasklists/host-basics.yaml
+    #   ansible.builtin.include_tasks: ./tasklists/host-basics.yaml
     # - name: ONE OFF
-    #   include_tasks: ./tasklists/local-user.yaml
+    #   ansible.builtin.include_tasks: ./tasklists/local-user.yaml
     # - name: ONE OFF
-    #   include_tasks: ./tasklists/ansible.yaml
+    #   ansible.builtin.include_tasks: ./tasklists/ansible.yaml
     # - name: ONE OFF
-    #   include_tasks: ./tasklists/bluetooth.yaml
+    #   ansible.builtin.include_tasks: ./tasklists/bluetooth.yaml
     - name: ONE OFF 2
-      include_tasks: ./tasklists/monitoring.yaml
+      ansible.builtin.include_tasks: ./tasklists/monitoring.yaml

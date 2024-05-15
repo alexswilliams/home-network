@@ -1,28 +1,28 @@
 - name: Monitoring project directory exists
-  file:
+  ansible.builtin.file:
     state: directory
     path: /opt/monitoring
-    recurse: yes
+    recurse: true
     owner: alexw
     group: alexw
-    mode: 0775
+    mode: "0775"
 
 - name: Monitoring compose project is configured
-  copy:
+  ansible.builtin.copy:
     dest: /opt/
-    src: ../files/monitoring
+    src: files/monitoring
     group: alexw
     owner: alexw
-    mode: 0664
+    mode: "0664"
 
 - name: SNMP and ethtool are installed
-  package:
+  ansible.builtin.package:
     state: present
     name:
       - net-snmp
       - ethtool
 
 - name: All containers are started
-  command:
+  ansible.builtin.command:
     chdir: /opt/monitoring
     cmd: docker compose up --build --detach --no-color --pull missing --quiet-pull --remove-orphans

@@ -1,15 +1,15 @@
 - name: Alarm user removed
-  user:
+  ansible.builtin.user:
     state: absent
     name: alarm
 
 - name: Alarm user's home dir removed
-  file:
+  ansible.builtin.file:
     state: absent
     path: /home/alarm
 
 - name: Lock root user
-  user:
+  ansible.builtin.user:
     state: present
     name: root
-    password_lock: yes
+    password_lock: true
