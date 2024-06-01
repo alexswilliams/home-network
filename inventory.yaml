@@ -5,7 +5,7 @@ archpi:
     #   ansible_python_interpreter: /usr/bin/python3.10
     #   ansible_user: alexw
     #   ansible_become_method: sudo
-      
+
     #   hostname_to_set: vesu-pi-us
     #   no_hw_clock: true
     #   no_wifi: true
@@ -13,9 +13,9 @@ archpi:
 
     192.168.1.5:
       ansible_connection: ssh
-      ansible_python_interpreter: /usr/bin/python3.11
+      ansible_python_interpreter: /usr/bin/python
       ansible_user: alexw
       ansible_become_method: sudo
-      
+
       hostname_to_set: pom-pi
       no_hw_clock: true

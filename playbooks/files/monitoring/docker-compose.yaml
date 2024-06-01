@@ -14,7 +14,7 @@ services:
       - "9981:9981"
 
   govee-monitor:
-    image: alexswilliams/govee-prometheus:master--2024-01-05-04-06--467cb21
+    image: alexswilliams/govee-prometheus:master--2024-05-25-13-33--4debf6a
     restart: always
     read_only: true
     volumes:
@@ -68,7 +68,7 @@ services:
       - "3000:3000"
 
   prom-node-exporter:
-    image: prom/node-exporter:v1.8.0
+    image: prom/node-exporter:v1.8.1
     restart: always
     user: root
     privileged: true

@@ -9,6 +9,6 @@
     # - name: ONE OFF
     #   ansible.builtin.include_tasks: ./tasklists/ansible.yaml
     # - name: ONE OFF
-    #   ansible.builtin.include_tasks: ./tasklists/bluetooth.yaml
+    #   ansible.builtin.include_tasks: ./tasklists/ansible.yaml
     - name: ONE OFF 2
       ansible.builtin.include_tasks: ./tasklists/monitoring.yaml
