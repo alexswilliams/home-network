@@ -1,6 +1,6 @@
 services:
   iot-monitor:
-    image: alexswilliams/homepower:master--2024-05-15-17-13--a34fadd
+    image: alexswilliams/homepower:master--2024-08-09-00-07--0365bd9
     volumes:
       - "./config/homepower/devices.yaml:/etc/homepower/devices.yaml"
       - "./config/homepower/credentials.yaml:/etc/homepower/credentials.yaml"
@@ -12,19 +12,19 @@ services:
     logging:
       driver: "local"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "3"
     ports:
       - "9981:9981"
 
   govee-monitor:
-    image: alexswilliams/govee-prometheus:master--2024-05-25-13-33--4debf6a
+    image: alexswilliams/govee-prometheus:master--2024-08-09-02-06--e267278
     restart: always
     read_only: true
     logging:
       driver: "local"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "3"
     volumes:
       - "./config/govee/devices.csv:/etc/govee/devices.csv"
@@ -37,7 +37,7 @@ services:
     network_mode: host # exposes port 8080
 
   telegraf:
-    image: telegraf:1.30.2
+    image: telegraf:1.31.2
     restart: always
     read_only: true
     logging:
@@ -55,7 +55,7 @@ services:
       - "/usr/share/snmp/mibs:/usr/share/snmp/mibs"
 
   prometheus:
-    image: prom/prometheus:v2.52.0
+    image: prom/prometheus:v2.53.1
     logging:
       driver: "local"
       options:
@@ -75,7 +75,7 @@ services:
       - "9090:9090"
 
   grafana:
-    image: grafana/grafana:11.0.0
+    image: grafana/grafana:11.1.2
     logging:
       driver: "local"
       options:
@@ -92,7 +92,7 @@ services:
       - "3000:3000"
 
   prom-node-exporter:
-    image: prom/node-exporter:v1.8.1
+    image: prom/node-exporter:v1.8.2
     restart: always
     user: root
     privileged: true
