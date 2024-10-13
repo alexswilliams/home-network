@@ -7,19 +7,19 @@ devices:
     driver: "kasa"
 
   - name: "Pendant Light"
-    room: "Den"
+    room: "Landing"
     ip: "192.168.1.51"
     model: "KL130B"
     driver: "kasa"
 
   - name: "Pendant Light"
-    room: "Kitchen"
+    room: "Snug"
     ip: "192.168.1.52"
     model: "KL130B"
     driver: "kasa"
 
   - name: "Pendant Light"
-    room: "Bedroom"
+    room: "Back Bedroom"
     ip: "192.168.1.53"
     model: "KL130B"
     driver: "kasa"
@@ -55,7 +55,7 @@ devices:
     driver: "kasa"
 
   - name: "Lava Lamp"
-    room: "Bedroom"
+    room: "Back Bedroom"
     ip: "192.168.1.59"
     model: "HS100"
     driver: "kasa"
@@ -92,12 +92,6 @@ devices:
   - name: "PC Desk Power"
     room: "Den"
     ip: "192.168.1.65"
-    model: "HS110"
-    driver: "kasa"
-
-  - name: "TV Power"
-    room: "Living Room"
-    ip: "192.168.1.66"
     model: "HS110"
     driver: "kasa"
 
