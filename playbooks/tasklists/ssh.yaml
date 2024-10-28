@@ -21,16 +21,17 @@
     cmd: cat /etc/ssh/ssh_host_ed25519_key.pub
   when: new_host_key_task.changed
 
-- name: Controller's known_hosts file contains new host key
-  become: false
-  ansible.builtin.known_hosts:
-    path: "~/.ssh/known_hosts"
-    state: present
-    name: "{{ inventory_hostname }}"
-    key: "{{ inventory_hostname }} {{ new_host_key_task.stdout_lines[0] }}"
-    hash_host: true
-  delegate_to: localhost
-  when: new_host_key_task.changed
+# TODO: work out why this is failing a syntax check
+# - name: Controller's known_hosts file contains new host key
+#   become: false
+#   ansible.builtin.known_hosts:
+#     path: "~/.ssh/known_hosts"
+#     state: present
+#     name: "{{ inventory_hostname }}"
+#     key: "{{ inventory_hostname }} {{ new_host_key_task.stdout_lines[0] }}"
+#     hash_host: true
+#   delegate_to: localhost
+#   when: new_host_key_task.changed
 
 - name: SSH Daemon is configured
   ansible.builtin.copy:

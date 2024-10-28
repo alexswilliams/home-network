@@ -14,12 +14,13 @@
     group: alexw
     mode: "0700"
 
-- name: Alexw has SSH public keys from github
-  ansible.posix.authorized_key:
-    user: alexw
-    state: present
-    key: https://github.com/alexswilliams.keys
-    exclusive: true
+# TODO: work out why this fails during bootstrap?
+# - name: Alexw has SSH public keys from github
+#   ansible.posix.authorized_key:
+#     user: alexw
+#     state: present
+#     key: https://github.com/alexswilliams.keys
+#     exclusive: true
 
 - name: Alexw bashrc is configured
   ansible.builtin.copy:

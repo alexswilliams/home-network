@@ -27,8 +27,8 @@
       ansible.builtin.include_tasks: ./tasklists/sysctl.yaml
     - name: FIREWALL
       ansible.builtin.include_tasks: ./tasklists/firewall.yaml
-    - name: LOCAL DNS
-      ansible.builtin.include_tasks: ./tasklists/local-dns.yaml
+    # - name: LOCAL DNS
+    #   ansible.builtin.include_tasks: ./tasklists/local-dns.yaml
     - name: TOOLS
       ansible.builtin.include_tasks: ./tasklists/tools.yaml
     - name: DOCKER

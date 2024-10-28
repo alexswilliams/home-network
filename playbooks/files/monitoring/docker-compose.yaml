@@ -37,7 +37,7 @@ services:
     network_mode: host # exposes port 8080
 
   telegraf:
-    image: telegraf:1.31.2
+    image: telegraf:1.32.1
     restart: always
     read_only: true
     logging:
@@ -55,7 +55,7 @@ services:
       - "/usr/share/snmp/mibs:/usr/share/snmp/mibs"
 
   prometheus:
-    image: prom/prometheus:v2.53.1
+    image: prom/prometheus:v2.55.0
     logging:
       driver: "local"
       options:
@@ -64,10 +64,10 @@ services:
     restart: always
     volumes:
       - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
-      - "prometheus-volume:/etc/prometheus/data"
+      - "/mnt/data/prometheus/data:/etc/prometheus/data"
     command:
-      - "--storage.tsdb.retention.time=3y"
-      - "--storage.tsdb.retention.size=16GB"
+      - "--storage.tsdb.retention.time=5y"
+      - "--storage.tsdb.retention.size=28GB"
       - "--config.file=/etc/prometheus/prometheus.yml"
     expose:
       - "9090"
@@ -75,7 +75,7 @@ services:
       - "9090:9090"
 
   grafana:
-    image: grafana/grafana:11.1.2
+    image: grafana/grafana:11.3.0
     logging:
       driver: "local"
       options:
@@ -85,7 +85,7 @@ services:
     volumes:
       - "./config/grafana/grafana.ini:/etc/grafana/grafana.ini"
       - "./config/grafana/grafana-datasources/:/etc/grafana/provisioning/datasources"
-      - "grafana-volume:/var/lib/grafana"
+      - "/mnt/data/grafana:/var/lib/grafana"
     expose:
       - "3000"
     ports:
@@ -118,7 +118,3 @@ services:
       - "9100"
     ports:
       - "9100:9100"
-
-volumes:
-  prometheus-volume:
-  grafana-volume:

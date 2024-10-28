@@ -19,7 +19,7 @@ devices:
     driver: "kasa"
 
   - name: "Pendant Light"
-    room: "Back Bedroom"
+    room: "Box Room"
     ip: "192.168.1.53"
     model: "KL130B"
     driver: "kasa"
@@ -58,6 +58,20 @@ devices:
     room: "Back Bedroom"
     ip: "192.168.1.59"
     model: "HS100"
+    driver: "kasa"
+
+  - name: "Pendant Light"
+    room: "Back Bedroom"
+    ip: "192.168.1.70"
+    # model: "L535B"
+    model: "KL110B"
+    driver: "kasa"
+
+  - name: "Pendant Light"
+    room: "Front Bedroom"
+    ip: "192.168.1.71"
+    # model: "L535B"
+    model: "KL110B"
     driver: "kasa"
 
   # Other things
