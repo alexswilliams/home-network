@@ -54,6 +54,27 @@ services:
       - "./config/mibs:/root/.snmp/mibs"
       - "/usr/share/snmp/mibs:/usr/share/snmp/mibs"
 
+  alertmanager:
+    image: prom/alertmanager:v0.28.0
+    logging:
+      driver: "local"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+    volumes:
+      - "./config/alertmanager:/etc/alertmanager/config"
+      - "/mnt/data/alertmanager/data:/etc/alertmanager/data"
+    command:
+      - "--config.file=/etc/alertmanager/config/alertmanager.yml"
+      - "--web.listen-address=:9093"
+      - "--web.external-url=http://192.168.1.5:9093"
+      # - "--log.level=debug"
+    expose:
+      - "9093"
+    ports:
+      - "9093:9093"
+
   prometheus:
     image: prom/prometheus:v3.1.0
     logging:
@@ -63,12 +84,16 @@ services:
         max-file: "3"
     restart: always
     volumes:
-      - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "./config/prometheus/rules.yml:/etc/prometheus/rules.yml"
       - "/mnt/data/prometheus/data:/etc/prometheus/data"
     command:
       - "--storage.tsdb.retention.time=5y"
       - "--storage.tsdb.retention.size=28GB"
+      - "--storage.tsdb.path=/etc/prometheus/data"
       - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--web.enable-lifecycle"
+      - "--web.external-url=http://192.168.1.5:9090"
     expose:
       - "9090"
     ports:

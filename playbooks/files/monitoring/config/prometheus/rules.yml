@@ -1,0 +1,30 @@
+groups:
+  - name: Test Alerts
+    interval: 30s
+    rules:
+      - alert: Test Rule
+        expr: vector(time() % 300) > 210
+        annotations:
+          summary: "Test Alert"
+          description: "Some test alert recorded at {{ $value }}"
+  - name: Fridge
+    interval: 30s
+    rules:
+      - alert: "Error reading temperature"
+        expr: (time() - timestamp(govee_has_error{alias="Fridge"}) > 60) or (govee_has_error{alias="Fridge"} != 0)
+        for: 1m
+        annotations:
+          summary: "Error reading temperature"
+          description: "Scrape succeeded but govee driver returned error code"
+      - alert: "Fridge Too Warm"
+        expr: govee_temperature_celsius{alias="Fridge"} > 7.0
+        for: 2m
+        annotations:
+          summary: "Fridge Too Warm"
+          description: "Fridge above 7 degrees, currently {{ $value }}"
+      - alert: "Fridge Too Cold"
+        expr: govee_temperature_celsius{alias="Fridge"} < -0.5
+        for: 2m
+        annotations:
+          summary: "Fridge Too Cold"
+          description: "Fridge below -0.5 degrees, currently {{ $value }}"

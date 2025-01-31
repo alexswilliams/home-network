@@ -50,3 +50,14 @@ scrape_configs:
 storage:
   tsdb:
     out_of_order_time_window: "10s"
+
+rule_files:
+  - /etc/prometheus/rules.yml
+
+alerting:
+  alertmanagers:
+    - timeout: "10s"
+      scheme: http
+      static_configs:
+        - targets:
+            - "alertmanager:9093"

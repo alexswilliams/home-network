@@ -8,7 +8,5 @@
     #   ansible.builtin.include_tasks: ./tasklists/local-user.yaml
     # - name: ONE OFF
     #   ansible.builtin.include_tasks: ./tasklists/ansible.yaml
-    # - name: ONE OFF
-    #   ansible.builtin.include_tasks: ./tasklists/ansible.yaml
     - name: ONE OFF 2
       ansible.builtin.include_tasks: ./tasklists/monitoring.yaml

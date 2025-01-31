@@ -27,3 +27,21 @@
     chdir: /opt/monitoring
     cmd: docker compose up --build --detach --no-color --pull missing --quiet-pull --remove-orphans
   changed_when: true
+
+- name: Prometheus has been reloaded
+  changed_when: true
+  ansible.builtin.uri:
+    url: http://localhost:9090/-/reload
+    method: POST
+    return_content: false
+    status_code:
+      - 200
+
+- name: Alertmanager has been reloaded
+  changed_when: true
+  ansible.builtin.uri:
+    url: http://localhost:9093/-/reload
+    method: POST
+    return_content: false
+    status_code:
+      - 200
