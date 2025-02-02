@@ -71,6 +71,7 @@ iptables -A FIREWALL -j ACCEPT -m conntrack --ctstate ESTABLISHED,RELATED
 iptables -A FIREWALL -j ACCEPT -i lo
 iptables -A FIREWALL -j LOGDROP -m conntrack --ctstate INVALID # Never reject when in invalid state
 iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type ping -m limit --limit 240/min -s 192.168.1.0/24
+iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type ping -m limit --limit 240/min -s 192.168.2.0/24
 iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type pong -m limit --limit 240/min
 
 ip6tables -A FIREWALL -j ACCEPT -m conntrack --ctstate ESTABLISHED,RELATED
@@ -114,8 +115,15 @@ iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 22 -m comment --
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 22 -m comment --comment "SSH"
 iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 9090 -m comment --comment "Prometheus"
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 9090 -m comment --comment "Prometheus"
+iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 9093 -m comment --comment "AlertManager"
+ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 9093 -m comment --comment "AlertManager"
 iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 3000 -m comment --comment "Grafana"
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 3000 -m comment --comment "Grafana"
+
+iptables -A FIREWALL -j ACCEPT -s 192.168.2.0/24 -p tcp --dport 9090 -m comment --comment "Prometheus (Work)"
+iptables -A FIREWALL -j ACCEPT -s 192.168.2.0/24 -p tcp --dport 9093 -m comment --comment "AlertManager (Work)"
+iptables -A FIREWALL -j ACCEPT -s 192.168.2.0/24 -p tcp --dport 3000 -m comment --comment "Grafana (Work)"
+
 
 # Docker-to-docker networking for accessing containers mapped to the host network
 iptables -A FIREWALL -j ACCEPT -s 172.18.0.0/24 -d 172.18.0.1 -p tcp --dport 8080 -m comment --comment "Govee metrics page"
