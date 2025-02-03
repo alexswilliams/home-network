@@ -1,6 +1,6 @@
 services:
   iot-monitor:
-    image: alexswilliams/homepower:master--2024-08-09-00-07--0365bd9
+    image: alexswilliams/homepower:master--2025-02-03-02-47--ec85ce6
     volumes:
       - "./config/homepower/devices.yaml:/etc/homepower/devices.yaml"
       - "./config/homepower/credentials.yaml:/etc/homepower/credentials.yaml"
