@@ -72,6 +72,7 @@ iptables -A FIREWALL -j ACCEPT -i lo
 iptables -A FIREWALL -j LOGDROP -m conntrack --ctstate INVALID # Never reject when in invalid state
 iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type ping -m limit --limit 240/min -s 192.168.1.0/24
 iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type ping -m limit --limit 240/min -s 192.168.2.0/24
+iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type ping -m limit --limit 240/min -s 192.168.3.0/24
 iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type pong -m limit --limit 240/min
 
 ip6tables -A FIREWALL -j ACCEPT -m conntrack --ctstate ESTABLISHED,RELATED
@@ -89,6 +90,8 @@ ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type echo-reply -m limit --li
 
 # Multicast Name Resolution
 iptables -A FIREWALL -j ACCEPT -p udp --dport 5353 -s 192.168.1.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
+iptables -A FIREWALL -j ACCEPT -p udp --dport 5353 -s 192.168.2.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
+iptables -A FIREWALL -j ACCEPT -p udp --dport 5353 -s 192.168.3.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
 for hoplimit in 1 255; do
     ip6tables -A FIREWALL -j ACCEPT -p udp --dport 5353 -d ff02::fb -m hl --hl-eq $hoplimit -m comment --comment "mDNS"
 done
