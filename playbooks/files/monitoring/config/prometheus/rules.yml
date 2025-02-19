@@ -11,7 +11,7 @@ groups:
     interval: 30s
     rules:
       - alert: "Error reading temperature"
-        expr: (time() - timestamp(govee_has_error{alias="Fridge"}) > 60) or (govee_has_error{alias="Fridge"} != 0)
+        expr: (time() - timestamp(govee_has_error{alias="Fridge"}) > 180) or (govee_has_error{alias="Fridge"} != 0)
         for: 1m
         annotations:
           summary: "Error reading temperature"
