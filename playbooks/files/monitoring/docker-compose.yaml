@@ -18,7 +18,7 @@ services:
       - "9981:9981"
 
   govee-monitor:
-    image: alexswilliams/govee-prometheus:master--2024-08-09-02-06--e267278
+    image: alexswilliams/govee-prometheus:master--2025-02-22-03-22--4329f7b
     restart: always
     read_only: true
     logging:
@@ -34,6 +34,7 @@ services:
       # - "BLE_SCAN_WINDOW=17"
       - "BLE_IGNORE_DUPLICATES=false"
       - "VERBOSE=false"
+      - "METRIC_TTL_SECONDS=110"
     network_mode: host # exposes port 8080
 
   telegraf:
