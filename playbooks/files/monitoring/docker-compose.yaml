@@ -17,6 +17,22 @@ services:
     ports:
       - "9981:9981"
 
+  prom-trmnl-renderer:
+    image: alexswilliams/prom-trmnl-renderer:master--2025-06-20-20-44--d2f074d
+    volumes:
+      - "./config/prom-trmnl-renderer/credentials.yaml:/var/aws/credentials"
+    environment:
+      - BUCKET_NAME=applied-quickness-bubble-trmnl-export
+      - CREDENTIAL_FILENAME=/var/aws/credentials
+      - PROMETHEUS_URI=http://prometheus:9090
+    restart: always
+    read_only: true
+    logging:
+      driver: "local"
+      options:
+        max-size: "1m"
+        max-file: "3"
+
   govee-monitor:
     image: alexswilliams/govee-prometheus:master--2025-02-22-03-22--4329f7b
     restart: always

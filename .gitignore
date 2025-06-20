@@ -2,3 +2,4 @@ bot_token_file.txt
 credentials.yaml
 secrets.tar.xz
 .idea
+**/prom-trmnl-renderer/credentials
