@@ -1,6 +1,6 @@
 services:
   iot-monitor:
-    image: alexswilliams/homepower:master--2025-05-02-23-42--b445491
+    image: alexswilliams/homepower:master--2025-06-21-00-47--d819f20
     volumes:
       - "./config/homepower/devices.yaml:/etc/homepower/devices.yaml:ro"
       - "./config/homepower/credentials.yaml:/etc/homepower/credentials.yaml:ro"
@@ -18,7 +18,7 @@ services:
       - "9981:9981"
 
   prom-trmnl-renderer:
-    image: alexswilliams/prom-trmnl-renderer:master--2025-06-21-00-28--d34f95a
+    image: alexswilliams/prom-trmnl-renderer:master--2025-06-21-00-49--f7995b5
     volumes:
       - "./config/prom-trmnl-renderer/credentials:/var/aws/credentials:ro"
       - "/usr/share/zoneinfo:/usr/share/zoneinfo:ro"
@@ -57,7 +57,7 @@ services:
 
   telegraf:
     # https://hub.docker.com/_/telegraf/tags
-    image: telegraf:1.34.2
+    image: telegraf:1.35.0
     restart: always
     read_only: true
     logging:
@@ -98,7 +98,7 @@ services:
 
   prometheus:
     # https://hub.docker.com/r/prom/prometheus/tags
-    image: prom/prometheus:v3.3.1
+    image: prom/prometheus:v3.4.1
     logging:
       driver: "local"
       options:
@@ -123,7 +123,7 @@ services:
 
   grafana:
     # https://hub.docker.com/r/grafana/grafana/tags
-    image: grafana/grafana:11.6.1
+    image: grafana/grafana:12.0.2
     logging:
       driver: "local"
       options:
