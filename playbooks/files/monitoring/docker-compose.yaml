@@ -2,8 +2,8 @@ services:
   iot-monitor:
     image: alexswilliams/homepower:master--2025-05-02-23-42--b445491
     volumes:
-      - "./config/homepower/devices.yaml:/etc/homepower/devices.yaml"
-      - "./config/homepower/credentials.yaml:/etc/homepower/credentials.yaml"
+      - "./config/homepower/devices.yaml:/etc/homepower/devices.yaml:ro"
+      - "./config/homepower/credentials.yaml:/etc/homepower/credentials.yaml:ro"
     environment:
       - HOMEPOWER_DEVICE_CONFIG_FILEPATH=/etc/homepower/devices.yaml
       - HOMEPOWER_CREDENTIAL_FILEPATH=/etc/homepower/credentials.yaml
@@ -18,9 +18,11 @@ services:
       - "9981:9981"
 
   prom-trmnl-renderer:
-    image: alexswilliams/prom-trmnl-renderer:master--2025-06-20-20-44--d2f074d
+    image: alexswilliams/prom-trmnl-renderer:master--2025-06-21-00-28--d34f95a
     volumes:
-      - "./config/prom-trmnl-renderer/credentials.yaml:/var/aws/credentials"
+      - "./config/prom-trmnl-renderer/credentials:/var/aws/credentials:ro"
+      - "/usr/share/zoneinfo:/usr/share/zoneinfo:ro"
+      - "/etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro"
     environment:
       - BUCKET_NAME=applied-quickness-bubble-trmnl-export
       - CREDENTIAL_FILENAME=/var/aws/credentials
@@ -43,7 +45,7 @@ services:
         max-size: "1m"
         max-file: "3"
     volumes:
-      - "./config/govee/devices.csv:/etc/govee/devices.csv"
+      - "./config/govee/devices.csv:/etc/govee/devices.csv:ro"
     environment:
       - "BT_ALIASES_FILE_PATH=/etc/govee/devices.csv"
       # - "BLE_SCAN_INTERVAL=53"
@@ -68,9 +70,9 @@ services:
     cap_add:
       - NET_RAW
     volumes:
-      - "./config/telegraf.conf:/etc/telegraf/telegraf.conf"
-      - "./config/mibs:/root/.snmp/mibs"
-      - "/usr/share/snmp/mibs:/usr/share/snmp/mibs"
+      - "./config/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
+      - "./config/mibs:/root/.snmp/mibs:ro"
+      - "/usr/share/snmp/mibs:/usr/share/snmp/mibs:ro"
 
   alertmanager:
     # https://hub.docker.com/r/prom/alertmanager/tags
