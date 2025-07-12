@@ -18,7 +18,7 @@ services:
       - "9981:9981"
 
   prom-trmnl-renderer:
-    image: alexswilliams/prom-trmnl-renderer:master--2025-06-21-00-49--f7995b5
+    image: alexswilliams/prom-trmnl-renderer:master--2025-07-11-19-33--d2d7ec4
     volumes:
       - "./config/prom-trmnl-renderer/credentials:/var/aws/credentials:ro"
       - "/usr/share/zoneinfo:/usr/share/zoneinfo:ro"
