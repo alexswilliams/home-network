@@ -70,9 +70,9 @@ ip6tables -A LOGDROP -j DROP
 iptables -A FIREWALL -j ACCEPT -m conntrack --ctstate ESTABLISHED,RELATED
 iptables -A FIREWALL -j ACCEPT -i lo
 iptables -A FIREWALL -j LOGDROP -m conntrack --ctstate INVALID # Never reject when in invalid state
-iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type ping -m limit --limit 240/min -s 192.168.1.0/24
 iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type ping -m limit --limit 240/min -s 192.168.2.0/24
 iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type ping -m limit --limit 240/min -s 192.168.3.0/24
+iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type ping -m limit --limit 240/min -s 192.168.6.0/24
 iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type pong -m limit --limit 240/min
 
 ip6tables -A FIREWALL -j ACCEPT -m conntrack --ctstate ESTABLISHED,RELATED
@@ -89,9 +89,9 @@ ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type echo-request -m limit --
 ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type echo-reply -m limit --limit 240/min
 
 # Multicast Name Resolution
-iptables -A FIREWALL -j ACCEPT -p udp --dport 5353 -s 192.168.1.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
 iptables -A FIREWALL -j ACCEPT -p udp --dport 5353 -s 192.168.2.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
 iptables -A FIREWALL -j ACCEPT -p udp --dport 5353 -s 192.168.3.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
+iptables -A FIREWALL -j ACCEPT -p udp --dport 5353 -s 192.168.6.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
 for hoplimit in 1 255; do
     ip6tables -A FIREWALL -j ACCEPT -p udp --dport 5353 -d ff02::fb -m hl --hl-eq $hoplimit -m comment --comment "mDNS"
 done
@@ -114,18 +114,14 @@ ip6tables -A FIREWALL -j ACCEPT -p udp --dport 521 -s fe80::/32 -d ff02::9 -m hl
 ip6tables -A FIREWALL -j ACCEPT -p udp --dport 546 --sport 547 -s fe80::1:1/32 -m hl --hl-eq 64 -m comment --comment "DHCPv6 from router"
 
 # Custom rules
-iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 22 -m comment --comment "SSH"
+iptables -A FIREWALL -j ACCEPT -s 192.168.0.0/16 -p tcp --dport 22 -m comment --comment "SSH"
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 22 -m comment --comment "SSH"
-iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 9090 -m comment --comment "Prometheus"
+iptables -A FIREWALL -j ACCEPT -s 192.168.0.0/16 -p tcp --dport 9090 -m comment --comment "Prometheus"
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 9090 -m comment --comment "Prometheus"
-iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 9093 -m comment --comment "AlertManager"
+iptables -A FIREWALL -j ACCEPT -s 192.168.0.0/16 -p tcp --dport 9093 -m comment --comment "AlertManager"
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 9093 -m comment --comment "AlertManager"
-iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -p tcp --dport 3000 -m comment --comment "Grafana"
+iptables -A FIREWALL -j ACCEPT -s 192.168.0.0/16 -p tcp --dport 3000 -m comment --comment "Grafana"
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 3000 -m comment --comment "Grafana"
-
-iptables -A FIREWALL -j ACCEPT -s 192.168.2.0/24 -p tcp --dport 9090 -m comment --comment "Prometheus (Work)"
-iptables -A FIREWALL -j ACCEPT -s 192.168.2.0/24 -p tcp --dport 9093 -m comment --comment "AlertManager (Work)"
-iptables -A FIREWALL -j ACCEPT -s 192.168.2.0/24 -p tcp --dport 3000 -m comment --comment "Grafana (Work)"
 
 
 # Docker-to-docker networking for accessing containers mapped to the host network

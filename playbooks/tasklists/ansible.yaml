@@ -3,22 +3,26 @@
     state: present
     name: ansible
 
+#- name: Install ansible
+#  ansible.builtin.package:
+#    state: present
+#    name: "{{cron_pkg}}"
+
 - name: Ansible project directory exists
   ansible.builtin.file:
     state: directory
     path: /opt/ansible
-    recurse: true
+    recurse: false
     owner: root
     group: root
-    mode: "0775"
+    mode: "0755"
 
 - name: Ansible local task lists are present
   ansible.builtin.copy:
     dest: /opt/
     src: files/ansible
     group: root
-    owner: root
-    mode: "0664"
+    mode: "0644"
 
 - name: Install Ansible Cron (LANG)
   ansible.builtin.cron:

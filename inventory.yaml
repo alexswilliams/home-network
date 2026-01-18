@@ -1,6 +1,6 @@
 archpi:
   hosts:
-    # 192.168.1.4:
+    # 192.168.6.11:
     #   ansible_connection: ssh
     #   ansible_python_interpreter: /usr/bin/python3.10
     #   ansible_user: alexw
@@ -11,7 +11,7 @@ archpi:
     #   no_wifi: true
     #   swap_device: mmcblk0p2
 
-    192.168.1.5:
+    192.168.6.10:
       ansible_connection: ssh
       ansible_python_interpreter: /usr/bin/python
       ansible_user: alexw
@@ -19,3 +19,4 @@ archpi:
 
       hostname_to_set: pom-pi
       no_hw_clock: true
+      cron_pkg: cronie
