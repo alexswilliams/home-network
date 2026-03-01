@@ -1,5 +1,3 @@
-global:
-
 route:
   receiver: TG
   group_wait: 30s
