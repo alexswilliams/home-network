@@ -16,7 +16,7 @@
     creates: /etc/ssh/ssh_host_ed25519_key
   register: new_host_key_task
 
-- name: Dispay new ED25519 host key
+- name: Display new ED25519 host key
   ansible.builtin.command:
     cmd: cat /etc/ssh/ssh_host_ed25519_key.pub
   when: new_host_key_task.changed

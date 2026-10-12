@@ -41,11 +41,11 @@
     job: en_GB.UTF-8
     insertafter: LANG
 
-- name: Install Ansible Cron
+- name: Install Key Fetch Cron
   ansible.builtin.cron:
     cron_file: /etc/cron.d/00_ansible
     user: alexw
-    name: cron playbook
+    name: fetch ssh pubkey file
     hour: "1,7,13,19"
     minute: "5"
-    job: ansible-playbook ./playbooks/cron-playbook.yaml
+    job: pushd /opt/ansible; ansible-playbook ./playbooks/cron-playbook.yaml
