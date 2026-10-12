@@ -91,19 +91,20 @@ ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type echo-reply -m limit --li
 # Multicast Name Resolution
 iptables -A FIREWALL -j ACCEPT -p udp --dport 5353 -s 192.168.2.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
 iptables -A FIREWALL -j ACCEPT -p udp --dport 5353 -s 192.168.3.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
+iptables -A FIREWALL -j ACCEPT -p udp --dport 5353 -s 192.168.5.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
 iptables -A FIREWALL -j ACCEPT -p udp --dport 5353 -s 192.168.6.0/24 -d 224.0.0.251 -m comment --comment "mDNS"
 for hoplimit in 1 255; do
     ip6tables -A FIREWALL -j ACCEPT -p udp --dport 5353 -d ff02::fb -m hl --hl-eq $hoplimit -m comment --comment "mDNS"
 done
 
 # Perhaps in the future, if we subscribe to LLMNR, these would be useful
-# iptables -A FIREWALL -j DROP -p udp --dport 5355 -s 192.168.1.0/24 -d 224.0.0.252 -m comment --comment "LLMNR (Windows)"
+# iptables -A FIREWALL -j DROP -p udp --dport 5355 -s 192.168.0.0/16 -d 224.0.0.252 -m comment --comment "LLMNR (Windows)"
 # for hoplimit in 1 255; do
 #   ip6tables -A FIREWALL -j DROP -p udp --dport 5355 -d ff02::1:3 -m hl --hl-eq $hoplimit -m comment --comment "LLMNR (Windows)"
 # done
 
 # GMP, because we live in a world of multicast now
-iptables -A FIREWALL -j ACCEPT -s 192.168.1.0/24 -d 224.0.0.0/8 -p igmp
+iptables -A FIREWALL -j ACCEPT -s 192.168.0.0/16 -d 224.0.0.0/8 -p igmp
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -d ff30::/24 -p icmpv6
 ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type 143 -s fe80::/32 -d ff02::16 -m hl --hl-eq 1 -m comment --comment "Multicast Listener Reports"
 
@@ -123,9 +124,17 @@ ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 9093 -m comment --co
 iptables -A FIREWALL -j ACCEPT -s 192.168.0.0/16 -p tcp --dport 3000 -m comment --comment "Grafana"
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 3000 -m comment --comment "Grafana"
 
+iptables -A FIREWALL -j ACCEPT -s 192.168.2.0/24 -p tcp --dport 8123 -m comment --comment "Home Assistant"
+iptables -A FIREWALL -j ACCEPT -s 192.168.5.200 -p tcp --dport 8123 -m comment --comment "Home Assistant"
+iptables -A FIREWALL -j ACCEPT -s 192.168.5.201 -p tcp --dport 8123 -m comment --comment "Home Assistant"
+iptables -A FIREWALL -j ACCEPT -s 192.168.5.202 -p tcp --dport 8123 -m comment --comment "Home Assistant"
+iptables -A FIREWALL -j ACCEPT -s 192.168.2.0/24 -p tcp --dport 5580 -m comment --comment "MatterJS"
+iptables -A FIREWALL -j ACCEPT -s 192.168.5.0/24 -p tcp --dport 5580 -m comment --comment "MatterJS"
+
 
 # Docker-to-docker networking for accessing containers mapped to the host network
 iptables -A FIREWALL -j ACCEPT -s 172.18.0.0/24 -d 172.18.0.1 -p tcp --dport 8080 -m comment --comment "Govee metrics page"
+iptables -A FIREWALL -j ACCEPT -s 172.18.0.0/24 -d 172.18.0.1 -p tcp --dport 5580 -m comment --comment "MatterJS"
 
 # Common drops for the sake of log noise
 iptables -A FIREWALL -j DROP -p udp --dport 67 --sport 68 -d 255.255.255.255 -m comment --comment "DHCP broadcasts from other devices"

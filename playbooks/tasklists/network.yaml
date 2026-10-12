@@ -1,0 +1,29 @@
+- name: Systemd Networkd config files are present
+  register: networking_config
+  ansible.builtin.copy:
+    dest: /etc/systemd/network/
+    src: files/network/
+    group: root
+    owner: root
+    mode: "0664"
+
+- name: Existing en.network does not exist
+  ansible.builtin.file:
+    path: /etc/systemd/network/en.network
+    state: absent
+- name: Existing eth.network does not exist
+  ansible.builtin.file:
+    path: /etc/systemd/network/eth.network
+    state: absent
+
+- name: Networking service is running
+  ansible.builtin.service:
+    state: started
+    enabled: true
+    name: systemd-networkd
+
+- name: Firewall changes are applied
+  ansible.builtin.service:
+    state: restarted
+    name: systemd-networkd
+  when: networking_config.changed

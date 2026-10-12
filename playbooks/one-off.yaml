@@ -2,11 +2,7 @@
   hosts: archpi
   become: true
   tasks:
-    # - name: ONE OFF
-    #   ansible.builtin.include_tasks: ./tasklists/host-basics.yaml
-    # - name: ONE OFF
-    #   ansible.builtin.include_tasks: ./tasklists/local-user.yaml
-    # - name: ONE OFF
-    #   ansible.builtin.include_tasks: ./tasklists/ansible.yaml
-    - name: ONE OFF 2
-      ansible.builtin.include_tasks: ./tasklists/monitoring.yaml
+#    - name: MONITORING
+#      ansible.builtin.include_tasks: ./tasklists/monitoring.yaml
+    - name: NETWORK
+      ansible.builtin.include_tasks: ./tasklists/network.yaml

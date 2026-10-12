@@ -21,6 +21,8 @@
       ansible.builtin.include_tasks: ./tasklists/unneeded-base-packages.yaml
     - name: HOST_BASICS
       ansible.builtin.include_tasks: ./tasklists/host-basics.yaml
+    - name: NETWORK
+      ansible.builtin.include_tasks: ./tasklists/network.yaml
     - name: ANSIBLE
       ansible.builtin.include_tasks: ./tasklists/ansible.yaml
     - name: SYSCTL

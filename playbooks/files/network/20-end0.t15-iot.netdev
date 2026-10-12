@@ -1,0 +1,6 @@
+[NetDev]
+Name=end0.t15-iot
+Kind=vlan
+
+[VLAN]
+Id=15

@@ -8,6 +8,7 @@
     mode: "0755"
 
 - name: Firewall is a systemd service
+  register: firewall_systemd_script
   ansible.builtin.copy:
     dest: /etc/systemd/system/firewall.service
     owner: root
@@ -46,4 +47,4 @@
   ansible.builtin.service:
     state: restarted
     name: firewall
-  when: firewall_script.changed
+  when: firewall_script.changed || firewall_systemd_script.changed

@@ -1,24 +1,45 @@
 services:
-  iot-monitor:
-    image: alexswilliams/homepower:master--2025-06-21-00-47--d819f20
-    volumes:
-      - "./config/homepower/devices.yaml:/etc/homepower/devices.yaml:ro"
-      - "./config/homepower/credentials.yaml:/etc/homepower/credentials.yaml:ro"
+
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:2026.10.1
+    privileged: true
+    restart: unless-stopped
     environment:
-      - HOMEPOWER_DEVICE_CONFIG_FILEPATH=/etc/homepower/devices.yaml
-      - HOMEPOWER_CREDENTIAL_FILEPATH=/etc/homepower/credentials.yaml
-    restart: always
+      TZ: Europe/London
+    volumes:
+      - /mnt/data/homeassistant/config:/config
+      - /run/dbus:/run/dbus:ro
+    network_mode: host # exposes tcp 8123
+
+  matterjs-server:
+    image: ghcr.io/matter-js/matterjs-server:1.4.0
     read_only: true
-    logging:
-      driver: "local"
-      options:
-        max-size: "1m"
-        max-file: "3"
-    ports:
-      - "9981:9981"
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - /mnt/data/matterjs/data:/data
+
+
+#  iot-monitor:
+#    image: 192.168.6.2:5000/alexswilliams/homepower:master--2025-06-21-00-47--d819f20
+#    volumes:
+#      - "./config/homepower/devices.yaml:/etc/homepower/devices.yaml:ro"
+#      - "./config/homepower/credentials.yaml:/etc/homepower/credentials.yaml:ro"
+#    environment:
+#      - HOMEPOWER_DEVICE_CONFIG_FILEPATH=/etc/homepower/devices.yaml
+#      - HOMEPOWER_CREDENTIAL_FILEPATH=/etc/homepower/credentials.yaml
+#    restart: always
+#    read_only: true
+#    logging:
+#      driver: "local"
+#      options:
+#        max-size: "1m"
+#        max-file: "3"
+#    ports:
+#      - "9981:9981"
 
   prom-trmnl-renderer:
-    image: alexswilliams/prom-trmnl-renderer:master--2025-07-11-19-33--d2d7ec4
+    image: 192.168.6.2:5000/alexswilliams/prom-trmnl-renderer:master--2025-07-11-19-33--d2d7ec4
     volumes:
       - "./config/prom-trmnl-renderer/credentials:/var/aws/credentials:ro"
       - "/usr/share/zoneinfo:/usr/share/zoneinfo:ro"
@@ -36,7 +57,7 @@ services:
         max-file: "3"
 
   govee-monitor:
-    image: alexswilliams/govee-prometheus:master--2025-02-22-03-22--4329f7b
+    image: 192.168.6.2:5000/alexswilliams/govee-prometheus:master--2025-02-22-03-22--4329f7b
     restart: always
     read_only: true
     logging:
