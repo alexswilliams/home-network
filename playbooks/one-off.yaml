@@ -5,4 +5,4 @@
 #    - name: MONITORING
 #      ansible.builtin.include_tasks: ./tasklists/monitoring.yaml
     - name: NETWORK
-      ansible.builtin.include_tasks: ./tasklists/ssh.yaml
+      ansible.builtin.include_tasks: ./tasklists/sysctl.yaml

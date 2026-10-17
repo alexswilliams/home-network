@@ -89,3 +89,13 @@
   with_items:
     - net.ipv4.conf.all.forwarding
     - net.ipv4.conf.default.forwarding
+
+- name: ARP Filtering is enabled
+  ansible.posix.sysctl:
+    state: present
+    name: "{{ item }}"
+    value: "1"
+    sysctl_set: true
+  with_items:
+    - net.ipv4.conf.all.arp_filter
+    - net.ipv4.conf.default.arp_filter
