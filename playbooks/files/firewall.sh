@@ -78,14 +78,20 @@ iptables -A FIREWALL -j ACCEPT -p icmp --icmp-type pong -m limit --limit 240/min
 ip6tables -A FIREWALL -j ACCEPT -m conntrack --ctstate ESTABLISHED,RELATED
 ip6tables -A FIREWALL -j ACCEPT -i lo
 ip6tables -A FIREWALL -j LOGDROP -m conntrack --ctstate INVALID # Never reject when in invalid state
-ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type destination-unreachable -m limit --limit 240/min
+ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type destination-unreachable -m limit --limit 240/sec
 ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type packet-too-big -m limit --limit 240/min
 ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type time-exceeded -m limit --limit 240/min
 ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type parameter-problem -m limit --limit 240/min
-ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type router-advertisement -m hl --hl-eq 255 -d ff02::1
-ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type neighbour-solicitation -m hl --hl-eq 255 -d ff02::/32
-ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type neighbour-advertisement -m hl --hl-eq 255 -d fe80::/32 # Only accept advertisments to link local addresses
-ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type echo-request -m limit --limit 240/min -s fe80::/32
+
+# NDP
+ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type router-solicitation -s fe80::/10 -m limit --limit  30/sec
+ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type router-advertisement -s fe80::/10 -m limit --limit  30/sec
+ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type neighbour-solicitation -s fe80::/10 -m limit --limit  30/sec
+ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type neighbour-advertisement -s fe80::/10 -m limit --limit  30/sec
+ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type redirect -s fe80::/10 -m limit --limit  30/sec
+
+# Ping
+ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type echo-request -m limit --limit 240/min
 ip6tables -A FIREWALL -j ACCEPT -p icmpv6 --icmpv6-type echo-reply -m limit --limit 240/min
 
 # Multicast Name Resolution
@@ -125,6 +131,7 @@ iptables -A FIREWALL -j ACCEPT -s 192.168.0.0/16 -p tcp --dport 3000 -m comment 
 ip6tables -A FIREWALL -j ACCEPT -s fe80::/32 -p tcp --dport 3000 -m comment --comment "Grafana"
 
 iptables -A FIREWALL -j ACCEPT -s 192.168.2.0/24 -p tcp --dport 8123 -m comment --comment "Home Assistant"
+iptables -A FIREWALL -j ACCEPT -s 192.168.5.200
 iptables -A FIREWALL -j ACCEPT -s 192.168.5.200 -p tcp --dport 8123 -m comment --comment "Home Assistant"
 iptables -A FIREWALL -j ACCEPT -s 192.168.5.201 -p tcp --dport 8123 -m comment --comment "Home Assistant"
 iptables -A FIREWALL -j ACCEPT -s 192.168.5.202 -p tcp --dport 8123 -m comment --comment "Home Assistant"

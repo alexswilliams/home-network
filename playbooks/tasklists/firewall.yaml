@@ -47,4 +47,4 @@
   ansible.builtin.service:
     state: restarted
     name: firewall
-  when: firewall_script.changed || firewall_systemd_script.changed
+  when: firewall_script.changed or firewall_systemd_script.changed
